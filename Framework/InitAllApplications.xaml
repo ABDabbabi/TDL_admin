@@ -1,15 +1,18 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="Initialize_Applications" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib" xmlns:ss="clr-namespace:System.Security;assembly=mscorlib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Activity mc:Ignorable="sap sap2010" x:Class="Initialize_Applications" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:ss="clr-namespace:System.Security;assembly=mscorlib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
     <x:Property sap2010:Annotation.AnnotationText="Dictionary structure to store configuration data of the process (settings, constants and assets)." Name="in_Config" Type="InArgument(scg:Dictionary(x:String, x:Object))" />
     <x:Property Name="io_SystemException" Type="InOutArgument(s:Exception)" />
+    <x:Property Name="in_ss_passwordSMTP" Type="OutArgument(ss:SecureString)" />
+    <x:Property Name="in_str_usernameSMTP" Type="OutArgument(x:String)" />
+    <x:Property Name="in_str_passwordSMTP" Type="OutArgument(x:String)" />
   </x:Members>
   <mva:VisualBasic.Settings>
     <x:Null />
   </mva:VisualBasic.Settings>
-  <sap:VirtualizedContainerService.HintSize>1153.33333333333,8970</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>952,10272</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>Initialization_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
-    <sco:Collection x:TypeArguments="x:String">
+    <scg:List x:TypeArguments="x:String" Capacity="78">
       <x:String>System.Activities.XamlIntegration</x:String>
       <x:String>System.Activities.Validation</x:String>
       <x:String>System.Activities</x:String>
@@ -49,10 +52,14 @@
       <x:String>UiPath.UIAutomationNext.Enums</x:String>
       <x:String>System.Net</x:String>
       <x:String>System.ComponentModel</x:String>
-    </sco:Collection>
+      <x:String>UiPath.CV</x:String>
+      <x:String>UiPath.Shared.ObjectLibrary</x:String>
+      <x:String>UiPath.CV.Activities</x:String>
+      <x:String>UiPath.CV.Activities.Interfaces</x:String>
+    </scg:List>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
-    <sco:Collection x:TypeArguments="AssemblyReference">
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="72">
       <AssemblyReference>System.Activities</AssemblyReference>
       <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
       <AssemblyReference>mscorlib</AssemblyReference>
@@ -87,13 +94,22 @@
       <AssemblyReference>UiPath.Testing.Activities</AssemblyReference>
       <AssemblyReference>UiPath.OCR.Activities</AssemblyReference>
       <AssemblyReference>UiPath.UIAutomationNext</AssemblyReference>
-    </sco:Collection>
+      <AssemblyReference>UiPath.Studio.Constants</AssemblyReference>
+      <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
+      <AssemblyReference>UiPath.CV</AssemblyReference>
+      <AssemblyReference>UiPath.UIAutomationNext.Activities.Design</AssemblyReference>
+      <AssemblyReference>UiPath.CV.Activities</AssemblyReference>
+    </scg:List>
   </TextExpression.ReferencesForImplementation>
-  <Sequence sap2010:Annotation.AnnotationText="Open applications used in the process and do necessary initialization procedures (e.g., login)." DisplayName="Initialize All Applications" sap:VirtualizedContainerService.HintSize="816.666666666667,8905.33333333333" sap2010:WorkflowViewState.IdRef="Sequence_9">
+  <Sequence sap2010:Annotation.AnnotationText="Open applications used in the process and do necessary initialization procedures (e.g., login)." DisplayName="Initialize All Applications" sap:VirtualizedContainerService.HintSize="916,10207" sap2010:WorkflowViewState.IdRef="Sequence_9">
     <Sequence.Variables>
       <Variable x:TypeArguments="x:String" Name="str_pathTDL_Admin" />
       <Variable x:TypeArguments="x:Boolean" Name="bool_TDL_AdminLoginExist" />
-      <Variable x:TypeArguments="x:Int32" Default="0" Name="int_tentativeDeConnexion" />
+      <Variable x:TypeArguments="x:Int32" Name="int_tentativeDeConnexion">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:Int32" />
+        </Variable.Default>
+      </Variable>
       <Variable x:TypeArguments="x:String" Name="str_path_InputFile" />
       <Variable x:TypeArguments="x:String" Name="str_pathExecTDL_Admin" />
       <Variable x:TypeArguments="x:Boolean" Name="bool_TDLWindowExist" />
@@ -101,6 +117,10 @@
       <Variable x:TypeArguments="x:Boolean" Name="bool_MSGErrLogin" />
       <Variable x:TypeArguments="x:String" Name="str_pathScreenshot" />
       <Variable x:TypeArguments="x:Int32" Name="int_tentativeDeConnexionTDL" />
+      <Variable x:TypeArguments="x:String" Name="str_username" />
+      <Variable x:TypeArguments="ss:SecureString" Name="ss_password" />
+      <Variable x:TypeArguments="x:String" Name="str_password" />
+      <Variable x:TypeArguments="x:String" Name="path_screenshot" />
     </Sequence.Variables>
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -108,26 +128,93 @@
         <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <ui:LogMessage DisplayName="Log message (Initialize applications)" sap:VirtualizedContainerService.HintSize="774.666666666667,94.6666666666667" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Trace" Message="[&quot;Opening applications...&quot;]" />
-    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="774.666666666667,94.6666666666667" sap2010:WorkflowViewState.IdRef="LogMessage_15" Message="[&quot;Adresse mail pour les erreurs :&quot;+in_Config(&quot;adresseMailForErrorMSG&quot;).ToString]" />
-    <Sequence DisplayName="Connexion à TDL_Admin" sap:VirtualizedContainerService.HintSize="774.666666666667,8513.33333333333" sap2010:WorkflowViewState.IdRef="Sequence_18">
+    <ui:LogMessage DisplayName="Log message (Initialize applications)" sap:VirtualizedContainerService.HintSize="854,94" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Trace" Message="[&quot;Opening applications...&quot;]" />
+    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="854,94" sap2010:WorkflowViewState.IdRef="LogMessage_15" Level="Info" Message="[&quot;Adresse mail pour les erreurs :&quot;+in_Config(&quot;adresseMailForErrorMSG&quot;).ToString]" />
+    <TryCatch DisplayName="TC_Get TDLAdmin Credential" sap:VirtualizedContainerService.HintSize="854,53" sap2010:WorkflowViewState.IdRef="TryCatch_4">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <TryCatch.Try>
+        <Sequence sap:VirtualizedContainerService.HintSize="400,515" sap2010:WorkflowViewState.IdRef="Sequence_59">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <ui:GetRobotCredential TimeoutMS="{x:Null}" AssetName="[in_Config(&quot;TDLAdmin_SMTP_Credentials&quot;).ToString]" DisplayName="Get Credential" sap:VirtualizedContainerService.HintSize="338,81" sap2010:WorkflowViewState.IdRef="GetRobotCredential_2" Password="[in_ss_passwordSMTP]" Username="[in_str_usernameSMTP]" />
+          <Assign sap:VirtualizedContainerService.HintSize="338,61" sap2010:WorkflowViewState.IdRef="Assign_27">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[in_str_passwordSMTP]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String" xml:space="preserve">[new  System.Net.NetworkCredential(in_str_passwordSMTP,in_ss_passwordSMTP).Password]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <ui:GetRobotCredential TimeoutMS="{x:Null}" AssetName="[in_Config(&quot;TDLAdmin_Credentials1&quot;).ToString]" DisplayName="Get Credential" sap:VirtualizedContainerService.HintSize="338,81" sap2010:WorkflowViewState.IdRef="GetRobotCredential_3" Password="[ss_password]" Username="[str_username]" />
+          <Assign sap:VirtualizedContainerService.HintSize="338,61" sap2010:WorkflowViewState.IdRef="Assign_28">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[str_password]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String" xml:space="preserve">[new  System.Net.NetworkCredential(str_username,ss_password).Password]</InArgument>
+            </Assign.Value>
+          </Assign>
+        </Sequence>
+      </TryCatch.Try>
+      <TryCatch.Catches>
+        <Catch x:TypeArguments="s:ArgumentException" sap:VirtualizedContainerService.HintSize="406,396" sap2010:WorkflowViewState.IdRef="Catch`1_4">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <ActivityAction x:TypeArguments="s:ArgumentException">
+            <ActivityAction.Argument>
+              <DelegateInArgument x:TypeArguments="s:ArgumentException" Name="exception" />
+            </ActivityAction.Argument>
+            <Sequence sap:VirtualizedContainerService.HintSize="400,326" sap2010:WorkflowViewState.IdRef="Sequence_60">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" From="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" SecurePassword="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Body="[&quot;Bonjour,&quot;+system.Environment.NewLine+system.Environment.NewLine+&quot;Le robot n'a pas pu récupérer l'identifiant et le mot de passe&quot;+system.Environment.NewLine+system.Environment.NewLine+&quot;Merci&quot;]" DisplayName="Send SMTP Mail Message" Email="[in_str_usernameSMTP]" EnableSSL="True" sap:VirtualizedContainerService.HintSize="338,150" sap2010:WorkflowViewState.IdRef="SendMail_12" IgnoreCRL="False" IsBodyHtml="False" Name="RPA TDL Admin" Password="[in_str_passwordSMTP]" Port="587" SecureConnection="Auto" Server="smtp.office365.com" Subject="Error robot" To="[in_Config(&quot;adresseMailForErrorMSG&quot;).ToString]">
+                <ui:SendMail.Files>
+                  <scg:List x:TypeArguments="InArgument(x:String)" Capacity="4">
+                    <InArgument x:TypeArguments="x:String">[str_pathScreenshot]</InArgument>
+                  </scg:List>
+                </ui:SendMail.Files>
+              </ui:SendMail>
+              <Throw Exception="[New SystemException(&quot;le robot n'a pas recuperer l'identifiant et le mot de passe&quot;)]" sap:VirtualizedContainerService.HintSize="338,25" sap2010:WorkflowViewState.IdRef="Throw_14" />
+            </Sequence>
+          </ActivityAction>
+        </Catch>
+      </TryCatch.Catches>
+    </TryCatch>
+    <Sequence DisplayName="Connexion à TDL_Admin" sap:VirtualizedContainerService.HintSize="854,9704" sap2010:WorkflowViewState.IdRef="Sequence_18">
       <sap:WorkflowViewStateService.ViewState>
         <scg:Dictionary x:TypeArguments="x:String, x:Object">
           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           <x:Boolean x:Key="IsPinned">False</x:Boolean>
         </scg:Dictionary>
       </sap:WorkflowViewStateService.ViewState>
-      <TryCatch DisplayName="Try Catch" sap:VirtualizedContainerService.HintSize="732.666666666667,5162" sap2010:WorkflowViewState.IdRef="TryCatch_2">
+      <TryCatch sap2010:Annotation.AnnotationText="Le robot se connecte a TDL_admin &#xA;Le robot fait au maximum 3 tentatives &#xA;Si le robot ne detecte pas la fenetre de TDL_Admin, il genere une &quot;system exception&quot; sinon il continue son process." DisplayName="TC_se connecter à TDL_Admin" sap:VirtualizedContainerService.HintSize="792,4570" sap2010:WorkflowViewState.IdRef="TryCatch_2">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
         <TryCatch.Try>
-          <ui:RetryScope DisplayName="RS_Click &quot;Login&quot;" sap:VirtualizedContainerService.HintSize="694,4924" sap2010:WorkflowViewState.IdRef="RetryScope_2" NumberOfRetries="3" RetryInterval="00:00:05">
+          <ui:RetryScope DisplayName="RS_Click &quot;Login&quot;" sap:VirtualizedContainerService.HintSize="754,4277" sap2010:WorkflowViewState.IdRef="RetryScope_2" NumberOfRetries="3" RetryInterval="00:00:05">
             <ui:RetryScope.ActivityBody>
               <ActivityAction>
-                <Sequence DisplayName="Se connecter a TDL_Admin" sap:VirtualizedContainerService.HintSize="652,4676.66666666667" sap2010:WorkflowViewState.IdRef="Sequence_19">
+                <Sequence DisplayName="Se connecter a TDL_Admin" sap:VirtualizedContainerService.HintSize="712,4028" sap2010:WorkflowViewState.IdRef="Sequence_19">
                   <Sequence.Variables>
-                    <Variable x:TypeArguments="x:String" Name="str_username" />
-                    <Variable x:TypeArguments="ss:SecureString" Name="ss_password" />
                     <Variable x:TypeArguments="x:String" Name="int_" />
-                    <Variable x:TypeArguments="x:String" Name="str_password" />
                   </Sequence.Variables>
                   <sap:WorkflowViewStateService.ViewState>
                     <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -135,7 +222,7 @@
                       <x:Boolean x:Key="IsPinned">False</x:Boolean>
                     </scg:Dictionary>
                   </sap:WorkflowViewStateService.ViewState>
-                  <Assign DisplayName="A_incrementer de compteur des tentatives" sap:VirtualizedContainerService.HintSize="610,62" sap2010:WorkflowViewState.IdRef="Assign_22">
+                  <Assign DisplayName="A_incrementer de compteur des tentatives" sap:VirtualizedContainerService.HintSize="650,61" sap2010:WorkflowViewState.IdRef="Assign_22">
                     <Assign.To>
                       <OutArgument x:TypeArguments="x:Int32">[int_tentativeDeConnexionTDL]</OutArgument>
                     </Assign.To>
@@ -143,17 +230,17 @@
                       <InArgument x:TypeArguments="x:Int32">[int_tentativeDeConnexionTDL+1]</InArgument>
                     </Assign.Value>
                   </Assign>
-                  <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="610,94.6666666666667" sap2010:WorkflowViewState.IdRef="LogMessage_17" Message="[&quot;Tentative de connexion :&quot;+int_tentativeDeConnexionTDL.ToString]" />
-                  <ui:RetryScope DisplayName="RS_Ouvrir TDL_Admin" sap:VirtualizedContainerService.HintSize="610,1484" sap2010:WorkflowViewState.IdRef="RetryScope_1" NumberOfRetries="3" RetryInterval="00:00:03">
+                  <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="650,94" sap2010:WorkflowViewState.IdRef="LogMessage_17" Message="[&quot;Tentative de connexion :&quot;+int_tentativeDeConnexionTDL.ToString]" />
+                  <ui:RetryScope DisplayName="RS_Ouvrir TDL_Admin" sap:VirtualizedContainerService.HintSize="650,1696" sap2010:WorkflowViewState.IdRef="RetryScope_1" NumberOfRetries="3" RetryInterval="00:00:03">
                     <ui:RetryScope.ActivityBody>
                       <ActivityAction>
-                        <Sequence sap:VirtualizedContainerService.HintSize="568,1236.66666666667" sap2010:WorkflowViewState.IdRef="Sequence_26">
+                        <Sequence sap:VirtualizedContainerService.HintSize="608,1447" sap2010:WorkflowViewState.IdRef="Sequence_26">
                           <sap:WorkflowViewStateService.ViewState>
                             <scg:Dictionary x:TypeArguments="x:String, x:Object">
                               <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                             </scg:Dictionary>
                           </sap:WorkflowViewStateService.ViewState>
-                          <Assign sap:VirtualizedContainerService.HintSize="526,62" sap2010:WorkflowViewState.IdRef="Assign_4">
+                          <Assign sap:VirtualizedContainerService.HintSize="546,61" sap2010:WorkflowViewState.IdRef="Assign_4">
                             <Assign.To>
                               <OutArgument x:TypeArguments="x:String">[str_pathExecTDL_Admin]</OutArgument>
                             </Assign.To>
@@ -161,13 +248,13 @@
                               <InArgument x:TypeArguments="x:String">[in_Config("pathExecTDL_Admin").ToString]</InArgument>
                             </Assign.Value>
                           </Assign>
-                          <Sequence DisplayName="Action" sap:VirtualizedContainerService.HintSize="526,1042.66666666667" sap2010:WorkflowViewState.IdRef="Sequence_10">
+                          <Sequence DisplayName="Action" sap:VirtualizedContainerService.HintSize="546,1235" sap2010:WorkflowViewState.IdRef="Sequence_10">
                             <sap:WorkflowViewStateService.ViewState>
                               <scg:Dictionary x:TypeArguments="x:String, x:Object">
                                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                               </scg:Dictionary>
                             </sap:WorkflowViewStateService.ViewState>
-                            <Assign sap:VirtualizedContainerService.HintSize="484,62" sap2010:WorkflowViewState.IdRef="Assign_2">
+                            <Assign sap:VirtualizedContainerService.HintSize="484,61" sap2010:WorkflowViewState.IdRef="Assign_2">
                               <Assign.To>
                                 <OutArgument x:TypeArguments="x:Int32">[int_tentativeDeConnexion]</OutArgument>
                               </Assign.To>
@@ -175,9 +262,9 @@
                                 <InArgument x:TypeArguments="x:Int32">[int_tentativeDeConnexion+1]</InArgument>
                               </Assign.Value>
                             </Assign>
-                            <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="484,94.6666666666667" sap2010:WorkflowViewState.IdRef="LogMessage_2" Message="[&quot;Tentative connexion à TDL :&quot;+int_tentativeDeConnexion.ToString]" />
-                            <ui:StartProcess Arguments="{x:Null}" WorkingDirectory="{x:Null}" DisplayName="Start Process" FileName="[str_pathExecTDL_Admin]" sap:VirtualizedContainerService.HintSize="484,86.6666666666667" sap2010:WorkflowViewState.IdRef="StartProcess_1" />
-                            <ui:UiElementExists DisplayName="Element Exists 'tdladmin.exe  Login'" Exists="[bool_TDL_AdminLoginExist]" sap:VirtualizedContainerService.HintSize="484,52.6666666666667" sap2010:WorkflowViewState.IdRef="UiElementExists_1">
+                            <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="484,94" sap2010:WorkflowViewState.IdRef="LogMessage_2" Message="[&quot;Tentative connexion à TDL :&quot;+int_tentativeDeConnexion.ToString]" />
+                            <ui:StartProcess Arguments="{x:Null}" WorkingDirectory="{x:Null}" DisplayName="Start Process" FileName="[str_pathExecTDL_Admin]" sap:VirtualizedContainerService.HintSize="484,88" sap2010:WorkflowViewState.IdRef="StartProcess_1" />
+                            <ui:UiElementExists DisplayName="Element Exists 'tdladmin.exe  Login'" Exists="[bool_TDL_AdminLoginExist]" sap:VirtualizedContainerService.HintSize="484,53" sap2010:WorkflowViewState.IdRef="UiElementExists_1">
                               <ui:UiElementExists.Target>
                                 <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="05377184-ac41-46f9-b4cb-5debbfb75c72" InformativeScreenshot="1a529e69356d61541c06db0b268ff251" Selector="&lt;wnd app='tdladmin.exe' cls='#32770' title='Login' /&gt;" WaitForReady="INTERACTIVE">
                                   <ui:Target.TimeoutMS>
@@ -192,7 +279,7 @@
                                 </scg:Dictionary>
                               </sap:WorkflowViewStateService.ViewState>
                             </ui:UiElementExists>
-                            <If Condition="[int_tentativeDeConnexion=3 and bool_TDL_AdminLoginExist=False]" sap:VirtualizedContainerService.HintSize="484,494.666666666667" sap2010:WorkflowViewState.IdRef="If_1">
+                            <If Condition="[int_tentativeDeConnexion=3 and bool_TDL_AdminLoginExist=False]" sap:VirtualizedContainerService.HintSize="484,668" sap2010:WorkflowViewState.IdRef="If_1">
                               <sap:WorkflowViewStateService.ViewState>
                                 <scg:Dictionary x:TypeArguments="x:String, x:Object">
                                   <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -200,18 +287,32 @@
                                 </scg:Dictionary>
                               </sap:WorkflowViewStateService.ViewState>
                               <If.Then>
-                                <Sequence sap:VirtualizedContainerService.HintSize="376,303.333333333333" sap2010:WorkflowViewState.IdRef="Sequence_12">
+                                <Sequence sap:VirtualizedContainerService.HintSize="400,478" sap2010:WorkflowViewState.IdRef="Sequence_12">
                                   <sap:WorkflowViewStateService.ViewState>
                                     <scg:Dictionary x:TypeArguments="x:String, x:Object">
                                       <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                                     </scg:Dictionary>
                                   </sap:WorkflowViewStateService.ViewState>
-                                  <ui:SendOutlookMail Account="{x:Null}" Bcc="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" TimeoutMS="{x:Null}" Body="le robot n'a pas pu ouvrir TDL Admin" DisplayName="Send Outlook Mail Message" sap:VirtualizedContainerService.HintSize="334,149.333333333333" sap2010:WorkflowViewState.IdRef="SendOutlookMail_1" Importance="Normal" IsBodyHtml="False" IsDraft="False" Sensitivity="Normal" Subject="Error robot" To="a.dabbabi@humans4help.com">
-                                    <ui:SendOutlookMail.Files>
-                                      <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
-                                    </ui:SendOutlookMail.Files>
-                                  </ui:SendOutlookMail>
-                                  <Throw Exception="[New SystemException(&quot;le robot n'a pas pu ouvrir TDL Admin&quot;)]" sap:VirtualizedContainerService.HintSize="334,22" sap2010:WorkflowViewState.IdRef="Throw_1" />
+                                  <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke TakeScreenshot workflow" sap:VirtualizedContainerService.HintSize="338,114" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_10" UnSafe="False" WorkflowFileName="Framework\TakeScreenshot.xaml">
+                                    <ui:InvokeWorkflowFile.Arguments>
+                                      <InArgument x:TypeArguments="x:String" x:Key="in_Folder">
+                                        <mva:VisualBasicValue x:TypeArguments="x:String" ExpressionText="in_Config(&quot;ExScreenshotsFolderPath&quot;).ToString" />
+                                      </InArgument>
+                                      <InOutArgument x:TypeArguments="x:String" x:Key="io_FilePath">
+                                        <mva:VisualBasicReference x:TypeArguments="x:String" ExpressionText="path_screenshot" />
+                                      </InOutArgument>
+                                    </ui:InvokeWorkflowFile.Arguments>
+                                  </ui:InvokeWorkflowFile>
+                                  <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" From="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" SecurePassword="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Body="[&quot;Bonjour,&quot;+system.Environment.NewLine+system.Environment.NewLine+&quot;Le robot n'a pas pu ouvrir TDL admin&quot;+system.Environment.NewLine+system.Environment.NewLine+&quot;Merci&quot;]" DisplayName="Send SMTP Mail Message" Email="[in_str_usernameSMTP]" EnableSSL="True" sap:VirtualizedContainerService.HintSize="338,148" sap2010:WorkflowViewState.IdRef="SendMail_1" IgnoreCRL="False" IsBodyHtml="False" Name="TDL RPA Admin" Password="[in_str_passwordSMTP]" Port="587" SecureConnection="Auto" Server="smtp.office365.com" Subject="Error robot" To="[in_Config(&quot;adresseMailForErrorMSG&quot;).ToString]">
+                                    <ui:SendMail.Files>
+                                      <scg:List x:TypeArguments="InArgument(x:String)" Capacity="4">
+                                        <InArgument x:TypeArguments="x:String">
+                                          <mva:VisualBasicValue x:TypeArguments="x:String" ExpressionText="path_screenshot" />
+                                        </InArgument>
+                                      </scg:List>
+                                    </ui:SendMail.Files>
+                                  </ui:SendMail>
+                                  <Throw Exception="[New SystemException(&quot;le robot n'a pas pu ouvrir TDL Admin&quot;)]" sap:VirtualizedContainerService.HintSize="338,25" sap2010:WorkflowViewState.IdRef="Throw_1" />
                                 </Sequence>
                               </If.Then>
                               <If.Else>
@@ -230,7 +331,7 @@
                     </ui:RetryScope.ActivityBody>
                     <ui:RetryScope.Condition>
                       <ActivityFunc x:TypeArguments="x:Boolean">
-                        <ui:CheckTrue ErrorMessage="{x:Null}" DisplayName="Check True" Expression="[bool_TDL_AdminLoginExist]" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="CheckTrue_1" />
+                        <ui:CheckTrue ErrorMessage="{x:Null}" DisplayName="Check True" Expression="[bool_TDL_AdminLoginExist]" sap:VirtualizedContainerService.HintSize="334,88" sap2010:WorkflowViewState.IdRef="CheckTrue_1" />
                       </ActivityFunc>
                     </ui:RetryScope.Condition>
                     <sap:WorkflowViewStateService.ViewState>
@@ -240,64 +341,17 @@
                       </scg:Dictionary>
                     </sap:WorkflowViewStateService.ViewState>
                   </ui:RetryScope>
-                  <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="610,94.6666666666667" sap2010:WorkflowViewState.IdRef="LogMessage_14" Message="[&quot;Se connecter a TDL Admin&quot;]" />
-                  <TryCatch DisplayName="TC_Get TDLAdmin Credential" sap:VirtualizedContainerService.HintSize="610,52.6666666666667" sap2010:WorkflowViewState.IdRef="TryCatch_1">
-                    <sap:WorkflowViewStateService.ViewState>
-                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
-                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
-                      </scg:Dictionary>
-                    </sap:WorkflowViewStateService.ViewState>
-                    <TryCatch.Try>
-                      <ui:GetRobotCredential TimeoutMS="{x:Null}" AssetName="[in_Config(&quot;TDLAdmin_Credentials1&quot;).ToString]" DisplayName="Get Credential" sap:VirtualizedContainerService.HintSize="308,80.6666666666667" sap2010:WorkflowViewState.IdRef="GetRobotCredential_1" Password="[ss_password]" Username="[str_username]" />
-                    </TryCatch.Try>
-                    <TryCatch.Catches>
-                      <Catch x:TypeArguments="s:ArgumentException" sap:VirtualizedContainerService.HintSize="404.666666666667,22" sap2010:WorkflowViewState.IdRef="Catch`1_1">
-                        <sap:WorkflowViewStateService.ViewState>
-                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
-                            <x:Boolean x:Key="IsPinned">False</x:Boolean>
-                          </scg:Dictionary>
-                        </sap:WorkflowViewStateService.ViewState>
-                        <ActivityAction x:TypeArguments="s:ArgumentException">
-                          <ActivityAction.Argument>
-                            <DelegateInArgument x:TypeArguments="s:ArgumentException" Name="exception" />
-                          </ActivityAction.Argument>
-                          <Sequence sap:VirtualizedContainerService.HintSize="376,303.333333333333" sap2010:WorkflowViewState.IdRef="Sequence_41">
-                            <sap:WorkflowViewStateService.ViewState>
-                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                              </scg:Dictionary>
-                            </sap:WorkflowViewStateService.ViewState>
-                            <ui:SendOutlookMail Account="{x:Null}" Bcc="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" TimeoutMS="{x:Null}" Body="le robot n'a pas recuperer l'identifiant et le mot de passe" DisplayName="Send Outlook Mail Message" sap:VirtualizedContainerService.HintSize="334,149.333333333333" sap2010:WorkflowViewState.IdRef="SendOutlookMail_6" Importance="Normal" IsBodyHtml="False" IsDraft="False" Sensitivity="Normal" Subject="Error robot" To="a.dabbabi@humans4help.com">
-                              <ui:SendOutlookMail.Files>
-                                <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
-                              </ui:SendOutlookMail.Files>
-                            </ui:SendOutlookMail>
-                            <Throw Exception="[New SystemException(&quot;le robot n'a pas recuperer l'identifiant et le mot de passe&quot;)]" sap:VirtualizedContainerService.HintSize="334,22" sap2010:WorkflowViewState.IdRef="Throw_9" />
-                          </Sequence>
-                        </ActivityAction>
-                      </Catch>
-                    </TryCatch.Catches>
-                  </TryCatch>
-                  <Assign sap:VirtualizedContainerService.HintSize="610,62" sap2010:WorkflowViewState.IdRef="Assign_20">
-                    <Assign.To>
-                      <OutArgument x:TypeArguments="x:String">[str_password]</OutArgument>
-                    </Assign.To>
-                    <Assign.Value>
-                      <InArgument x:TypeArguments="x:String" xml:space="preserve">[new  System.Net.NetworkCredential(str_username,ss_password).Password]</InArgument>
-                    </Assign.Value>
-                  </Assign>
-                  <ui:RetryScope DisplayName="RS_Type_Username" sap:VirtualizedContainerService.HintSize="610,403.333333333333" sap2010:WorkflowViewState.IdRef="RetryScope_4" NumberOfRetries="3" RetryInterval="00:00:05">
+                  <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="650,94" sap2010:WorkflowViewState.IdRef="LogMessage_14" Message="[&quot;Se connecter a TDL Admin&quot;]" />
+                  <ui:RetryScope DisplayName="RS_Type_Username" sap:VirtualizedContainerService.HintSize="650,53" sap2010:WorkflowViewState.IdRef="RetryScope_4" NumberOfRetries="3" RetryInterval="00:00:05">
                     <ui:RetryScope.ActivityBody>
                       <ActivityAction>
-                        <Sequence DisplayName="Action" sap:VirtualizedContainerService.HintSize="376,226" sap2010:WorkflowViewState.IdRef="Sequence_23">
+                        <Sequence DisplayName="Action" sap:VirtualizedContainerService.HintSize="400,246" sap2010:WorkflowViewState.IdRef="Sequence_23">
                           <sap:WorkflowViewStateService.ViewState>
                             <scg:Dictionary x:TypeArguments="x:String, x:Object">
                               <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                             </scg:Dictionary>
                           </sap:WorkflowViewStateService.ViewState>
-                          <ui:TypeInto AlterIfDisabled="{x:Null}" ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" SendWindowMessages="{x:Null}" SimulateType="{x:Null}" Activate="True" DisplayName="TI_Type &quot;Username&quot;" EmptyField="True" sap:VirtualizedContainerService.HintSize="334,134" sap2010:WorkflowViewState.IdRef="TypeInto_2" Text="[str_username]">
+                          <ui:TypeInto AlterIfDisabled="{x:Null}" ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" Activate="True" DisplayName="TI_Type &quot;Username&quot;" EmptyField="True" sap:VirtualizedContainerService.HintSize="338,135" sap2010:WorkflowViewState.IdRef="TypeInto_2" SendWindowMessages="True" SimulateType="False" Text="[str_username]">
                             <ui:TypeInto.Target>
                               <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="95e0fc6d-51c1-4618-8ad1-35241c180ac7" InformativeScreenshot="c8da983447fc93ee7dcda63b3c9869ea" Selector="&lt;wnd app='tdladmin.exe' cls='#32770' title='Login' /&gt;&lt;wnd ctrlid='1045' /&gt;" WaitForReady="INTERACTIVE">
                                 <ui:Target.TimeoutMS>
@@ -314,21 +368,21 @@
                     </ui:RetryScope.Condition>
                     <sap:WorkflowViewStateService.ViewState>
                       <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
                         <x:Boolean x:Key="IsPinned">False</x:Boolean>
                       </scg:Dictionary>
                     </sap:WorkflowViewStateService.ViewState>
                   </ui:RetryScope>
-                  <ui:RetryScope DisplayName="RS_Type &quot;Password&quot;" sap:VirtualizedContainerService.HintSize="610,403.333333333333" sap2010:WorkflowViewState.IdRef="RetryScope_3" NumberOfRetries="3" RetryInterval="00:00:05">
+                  <ui:RetryScope DisplayName="RS_Type &quot;Password&quot;" sap:VirtualizedContainerService.HintSize="650,53" sap2010:WorkflowViewState.IdRef="RetryScope_3" NumberOfRetries="3" RetryInterval="00:00:05">
                     <ui:RetryScope.ActivityBody>
                       <ActivityAction>
-                        <Sequence DisplayName="Action" sap:VirtualizedContainerService.HintSize="376,226" sap2010:WorkflowViewState.IdRef="Sequence_22">
+                        <Sequence DisplayName="Action" sap:VirtualizedContainerService.HintSize="400,246" sap2010:WorkflowViewState.IdRef="Sequence_22">
                           <sap:WorkflowViewStateService.ViewState>
                             <scg:Dictionary x:TypeArguments="x:String, x:Object">
                               <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                             </scg:Dictionary>
                           </sap:WorkflowViewStateService.ViewState>
-                          <ui:TypeInto AlterIfDisabled="{x:Null}" ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" SimulateType="{x:Null}" Activate="True" DisplayName="TI_Type &quot;Password&quot;" sap:VirtualizedContainerService.HintSize="334,134" sap2010:WorkflowViewState.IdRef="TypeInto_1" Text="[str_password]">
+                          <ui:TypeInto AlterIfDisabled="{x:Null}" ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" Activate="True" DisplayName="TI_Type &quot;Password&quot;" EmptyField="True" sap:VirtualizedContainerService.HintSize="338,135" sap2010:WorkflowViewState.IdRef="TypeInto_1" SendWindowMessages="True" SimulateType="False" Text="[str_password]">
                             <ui:TypeInto.Target>
                               <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="92fad39f-694f-4552-93ef-5e4002cd4991" InformativeScreenshot="5fb55a57dae945cd977d2e2c20dc47f6" Selector="&lt;wnd app='tdladmin.exe' cls='#32770' title='Login' /&gt;&lt;wnd ctrlid='1013' /&gt;">
                                 <ui:Target.TimeoutMS>
@@ -348,12 +402,12 @@
                     </ui:RetryScope.Condition>
                     <sap:WorkflowViewStateService.ViewState>
                       <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
                         <x:Boolean x:Key="IsPinned">False</x:Boolean>
                       </scg:Dictionary>
                     </sap:WorkflowViewStateService.ViewState>
                   </ui:RetryScope>
-                  <Assign sap:VirtualizedContainerService.HintSize="610,62" sap2010:WorkflowViewState.IdRef="Assign_19">
+                  <Assign sap:VirtualizedContainerService.HintSize="650,61" sap2010:WorkflowViewState.IdRef="Assign_19">
                     <Assign.To>
                       <OutArgument x:TypeArguments="x:Boolean">[bool_TDL_AdminLoginExist]</OutArgument>
                     </Assign.To>
@@ -361,7 +415,7 @@
                       <InArgument x:TypeArguments="x:Boolean">[new Boolean]</InArgument>
                     </Assign.Value>
                   </Assign>
-                  <Assign sap:VirtualizedContainerService.HintSize="610,62" sap2010:WorkflowViewState.IdRef="Assign_23">
+                  <Assign sap:VirtualizedContainerService.HintSize="650,61" sap2010:WorkflowViewState.IdRef="Assign_23">
                     <Assign.To>
                       <OutArgument x:TypeArguments="x:Boolean">[bool_MSGErrLogin]</OutArgument>
                     </Assign.To>
@@ -369,7 +423,7 @@
                       <InArgument x:TypeArguments="x:Boolean">[new Boolean]</InArgument>
                     </Assign.Value>
                   </Assign>
-                  <ui:Click AlterIfDisabled="{x:Null}" DelayBefore="{x:Null}" DelayMS="{x:Null}" SendWindowMessages="{x:Null}" SimulateClick="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="C_Button &quot;Login&quot;" sap:VirtualizedContainerService.HintSize="610,106" sap2010:WorkflowViewState.IdRef="Click_1" KeyModifiers="None" MouseButton="BTN_LEFT">
+                  <ui:Click AlterIfDisabled="{x:Null}" DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="C_Button &quot;Login&quot;" sap:VirtualizedContainerService.HintSize="650,107" sap2010:WorkflowViewState.IdRef="Click_1" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="True" SimulateClick="False">
                     <ui:Click.CursorPosition>
                       <ui:CursorPosition Position="Center">
                         <ui:CursorPosition.OffsetX>
@@ -388,15 +442,15 @@
                       </ui:Target>
                     </ui:Click.Target>
                   </ui:Click>
-                  <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="610,52.6666666666667" sap2010:WorkflowViewState.IdRef="CommentOut_5">
+                  <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="650,53" sap2010:WorkflowViewState.IdRef="CommentOut_5">
                     <ui:CommentOut.Body>
-                      <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="376,177.333333333333" sap2010:WorkflowViewState.IdRef="Sequence_53">
+                      <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="400,197" sap2010:WorkflowViewState.IdRef="Sequence_53">
                         <sap:WorkflowViewStateService.ViewState>
                           <scg:Dictionary x:TypeArguments="x:String, x:Object">
                             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                           </scg:Dictionary>
                         </sap:WorkflowViewStateService.ViewState>
-                        <ui:MessageBox Caption="{x:Null}" ChosenButton="{x:Null}" AutoCloseAfter="00:00:00" DisplayName="Message Box" sap:VirtualizedContainerService.HintSize="334,85.3333333333333" sap2010:WorkflowViewState.IdRef="MessageBox_3" Text="[&quot;ok&quot;]" />
+                        <ui:MessageBox Caption="{x:Null}" ChosenButton="{x:Null}" AutoCloseAfter="00:00:00" DisplayName="Message Box" sap:VirtualizedContainerService.HintSize="338,86" sap2010:WorkflowViewState.IdRef="MessageBox_3" Text="[&quot;ok&quot;]" />
                       </Sequence>
                     </ui:CommentOut.Body>
                     <sap:WorkflowViewStateService.ViewState>
@@ -406,13 +460,13 @@
                       </scg:Dictionary>
                     </sap:WorkflowViewStateService.ViewState>
                   </ui:CommentOut>
-                  <ui:UiElementExists DisplayName="Element Exists 'tdladmin.exe  Login'" Exists="[bool_TDLWindowExist]" sap:VirtualizedContainerService.HintSize="610,106" sap2010:WorkflowViewState.IdRef="UiElementExists_11">
+                  <ui:UiElementExists DisplayName="Element Exists 'tdladmin.exe  Login'" Exists="[bool_TDLWindowExist]" sap:VirtualizedContainerService.HintSize="650,107" sap2010:WorkflowViewState.IdRef="UiElementExists_11">
                     <ui:UiElementExists.Target>
                       <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="b674592b-ee1b-41a7-9037-289e2fdfe867" InformativeScreenshot="bbfb3702c3d7ef2096b5655c58734a33" Selector="&lt;wnd app='tdladmin.exe' cls='#32770' title='TDL-ADMIN' /&gt;&lt;ctrl automationid='MenuBar' name='Application' role='menu bar' /&gt;&lt;ctrl name='System data' role='menu item' /&gt;" TimeoutMS="5000" WaitForReady="INTERACTIVE" />
                     </ui:UiElementExists.Target>
                   </ui:UiElementExists>
-                  <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="610,94.6666666666667" sap2010:WorkflowViewState.IdRef="LogMessage_20" Message="[bool_TDLWindowExist]" />
-                  <ui:UiElementExists DisplayName="Element Exists 'Static'" Exists="[bool_MSGErrLogin]" sap:VirtualizedContainerService.HintSize="610,106" sap2010:WorkflowViewState.IdRef="UiElementExists_12">
+                  <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="650,94" sap2010:WorkflowViewState.IdRef="LogMessage_20" Message="[&quot;Fenetre TDL ouverte ? :&quot;+bool_TDLWindowExist.ToString]" />
+                  <ui:UiElementExists DisplayName="Element Exists 'Static'" Exists="[bool_MSGErrLogin]" sap:VirtualizedContainerService.HintSize="650,107" sap2010:WorkflowViewState.IdRef="UiElementExists_12">
                     <ui:UiElementExists.Target>
                       <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="a37f365e-bfa2-451a-8569-5b0800fff2ae" InformativeScreenshot="b236eb3448fc64e8bae0856534158e21" Selector="&lt;wnd app='tdladmin.exe' cls='#32770' title='TDL-ADMIN' /&gt;&lt;wnd ctrlid='65535' title='TCBLogin: MT*' aaname='TCBLogin: MT*' /&gt;" TimeoutMS="5000">
                         <ui:Target.WaitForReady>
@@ -421,16 +475,22 @@
                       </ui:Target>
                     </ui:UiElementExists.Target>
                   </ui:UiElementExists>
-                  <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="610,94.6666666666667" sap2010:WorkflowViewState.IdRef="LogMessage_21" Message="[bool_MSGErrLogin]" />
-                  <If Condition="[int_tentativeDeConnexionTDL&lt;3 and bool_MSGErrLogin]" sap:VirtualizedContainerService.HintSize="610,418.666666666667" sap2010:WorkflowViewState.IdRef="If_10">
+                  <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="650,94" sap2010:WorkflowViewState.IdRef="LogMessage_21" Message="[&quot;message d'erreur exist ?  &quot;+bool_MSGErrLogin.ToString]" />
+                  <If Condition="[int_tentativeDeConnexionTDL&lt;3 and bool_MSGErrLogin]" sap:VirtualizedContainerService.HintSize="650,436" sap2010:WorkflowViewState.IdRef="If_10">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
                     <If.Then>
-                      <Sequence sap:VirtualizedContainerService.HintSize="376,227.333333333333" sap2010:WorkflowViewState.IdRef="Sequence_50">
+                      <Sequence sap:VirtualizedContainerService.HintSize="400,246" sap2010:WorkflowViewState.IdRef="Sequence_50">
                         <sap:WorkflowViewStateService.ViewState>
                           <scg:Dictionary x:TypeArguments="x:String, x:Object">
                             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                           </scg:Dictionary>
                         </sap:WorkflowViewStateService.ViewState>
-                        <ui:KillProcess AppliesTo="{x:Null}" ContinueOnError="{x:Null}" Process="{x:Null}" DisplayName="Kill Process" sap:VirtualizedContainerService.HintSize="334,135.333333333333" sap2010:WorkflowViewState.IdRef="KillProcess_1" ProcessName="TDLAdmin" />
+                        <ui:KillProcess AppliesTo="{x:Null}" ContinueOnError="{x:Null}" Process="{x:Null}" DisplayName="Kill Process" sap:VirtualizedContainerService.HintSize="338,135" sap2010:WorkflowViewState.IdRef="KillProcess_1" ProcessName="TDLAdmin" />
                       </Sequence>
                     </If.Then>
                     <If.Else>
@@ -443,15 +503,15 @@
                       </Sequence>
                     </If.Else>
                   </If>
-                  <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="610,52.6666666666667" sap2010:WorkflowViewState.IdRef="CommentOut_4">
+                  <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="650,53" sap2010:WorkflowViewState.IdRef="CommentOut_4">
                     <ui:CommentOut.Body>
-                      <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="990,1120.66666666667" sap2010:WorkflowViewState.IdRef="Sequence_45">
+                      <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="1053,1184" sap2010:WorkflowViewState.IdRef="Sequence_45">
                         <sap:WorkflowViewStateService.ViewState>
                           <scg:Dictionary x:TypeArguments="x:String, x:Object">
                             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                           </scg:Dictionary>
                         </sap:WorkflowViewStateService.ViewState>
-                        <If Condition="[bool_TDLWindowExist= False and int_tentativeDeConnexionTDL=3]" sap:VirtualizedContainerService.HintSize="948,1028.66666666667" sap2010:WorkflowViewState.IdRef="If_3">
+                        <If Condition="[bool_TDLWindowExist= False and int_tentativeDeConnexionTDL=3]" sap:VirtualizedContainerService.HintSize="991,1073" sap2010:WorkflowViewState.IdRef="If_3">
                           <sap:WorkflowViewStateService.ViewState>
                             <scg:Dictionary x:TypeArguments="x:String, x:Object">
                               <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -459,60 +519,59 @@
                             </scg:Dictionary>
                           </sap:WorkflowViewStateService.ViewState>
                           <If.Then>
-                            <Sequence sap:VirtualizedContainerService.HintSize="376,587" sap2010:WorkflowViewState.IdRef="Sequence_24">
+                            <Sequence sap:VirtualizedContainerService.HintSize="400,478" sap2010:WorkflowViewState.IdRef="Sequence_24">
                               <sap:WorkflowViewStateService.ViewState>
                                 <scg:Dictionary x:TypeArguments="x:String, x:Object">
                                   <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                                 </scg:Dictionary>
                               </sap:WorkflowViewStateService.ViewState>
-                              <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,93" sap2010:WorkflowViewState.IdRef="LogMessage_18" Message="[&quot;1&quot;]" />
-                              <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke TakeScreenshot workflow" sap:VirtualizedContainerService.HintSize="334,113" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Framework\TakeScreenshot.xaml">
+                              <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke TakeScreenshot workflow" sap:VirtualizedContainerService.HintSize="338,114" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" UnSafe="False" WorkflowFileName="Framework\TakeScreenshot.xaml">
                                 <ui:InvokeWorkflowFile.Arguments>
                                   <InArgument x:TypeArguments="x:String" x:Key="in_Folder">[in_Config("ExScreenshotsFolderPath").ToString]</InArgument>
                                   <InOutArgument x:TypeArguments="x:String" x:Key="io_FilePath">[str_pathScreenshot]</InOutArgument>
                                 </ui:InvokeWorkflowFile.Arguments>
                               </ui:InvokeWorkflowFile>
-                              <ui:SendOutlookMail Account="{x:Null}" Bcc="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" TimeoutMS="{x:Null}" Body="le robot n'a pas pu se connecter à TDL Admin" DisplayName="Send Outlook Mail Message" sap:VirtualizedContainerService.HintSize="334,147" sap2010:WorkflowViewState.IdRef="SendOutlookMail_2" Importance="Normal" IsBodyHtml="False" IsDraft="False" Sensitivity="Normal" Subject="Erreur robot" To="[in_config(&quot;adresseMailForErrorMSG&quot;).ToString]">
-                                <ui:SendOutlookMail.Files>
+                              <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" From="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" SecurePassword="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Body="[&quot;Bonjour,&quot;+system.Environment.NewLine+system.Environment.NewLine+&quot;Le robot n'a pas pu se connecter à TDL Admin&quot;+system.Environment.NewLine+system.Environment.NewLine+&quot;Merci&quot;]" DisplayName="Send SMTP Mail Message" Email="[in_str_usernameSMTP]" EnableSSL="True" sap:VirtualizedContainerService.HintSize="338,148" sap2010:WorkflowViewState.IdRef="SendMail_4" IgnoreCRL="False" IsBodyHtml="False" Name="RPA TDL Admin" Password="[in_str_passwordSMTP]" Port="587" SecureConnection="Auto" Server="smtp.office365.com" Subject="Error robot" To="[in_Config(&quot;adresseMailForErrorMSG&quot;).ToString]">
+                                <ui:SendMail.Files>
                                   <scg:List x:TypeArguments="InArgument(x:String)" Capacity="4">
                                     <InArgument x:TypeArguments="x:String">[str_pathScreenshot]</InArgument>
                                   </scg:List>
-                                </ui:SendOutlookMail.Files>
-                              </ui:SendOutlookMail>
-                              <Throw Exception="[New SystemException(&quot;le robot n'a pas pu se connecter à TDL Admin&quot;)]" sap:VirtualizedContainerService.HintSize="334,22" sap2010:WorkflowViewState.IdRef="Throw_5" />
+                                </ui:SendMail.Files>
+                              </ui:SendMail>
+                              <Throw Exception="[New SystemException(&quot;le robot n'a pas pu se connecter à TDL Admin&quot;)]" sap:VirtualizedContainerService.HintSize="338,25" sap2010:WorkflowViewState.IdRef="Throw_5" />
                             </Sequence>
                           </If.Then>
                           <If.Else>
-                            <Sequence sap:VirtualizedContainerService.HintSize="526,868" sap2010:WorkflowViewState.IdRef="Sequence_25">
+                            <Sequence sap:VirtualizedContainerService.HintSize="546,913" sap2010:WorkflowViewState.IdRef="Sequence_25">
                               <sap:WorkflowViewStateService.ViewState>
                                 <scg:Dictionary x:TypeArguments="x:String, x:Object">
                                   <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                                 </scg:Dictionary>
                               </sap:WorkflowViewStateService.ViewState>
-                              <If Condition="[bool_MSGErrLogin and int_tentativeDeConnexionTDL=3]" sap:VirtualizedContainerService.HintSize="484,776" sap2010:WorkflowViewState.IdRef="If_7">
+                              <If Condition="[bool_MSGErrLogin and int_tentativeDeConnexionTDL=3]" sap:VirtualizedContainerService.HintSize="484,802" sap2010:WorkflowViewState.IdRef="If_7">
                                 <If.Then>
-                                  <Sequence sap:VirtualizedContainerService.HintSize="376,587" sap2010:WorkflowViewState.IdRef="Sequence_42">
+                                  <Sequence sap:VirtualizedContainerService.HintSize="400,612" sap2010:WorkflowViewState.IdRef="Sequence_42">
                                     <sap:WorkflowViewStateService.ViewState>
                                       <scg:Dictionary x:TypeArguments="x:String, x:Object">
                                         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                                         <x:Boolean x:Key="IsPinned">False</x:Boolean>
                                       </scg:Dictionary>
                                     </sap:WorkflowViewStateService.ViewState>
-                                    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,93" sap2010:WorkflowViewState.IdRef="LogMessage_19" Message="[&quot;Z&quot;]" />
-                                    <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke TakeScreenshot workflow" sap:VirtualizedContainerService.HintSize="334,113" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="Framework\TakeScreenshot.xaml">
+                                    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="338,94" sap2010:WorkflowViewState.IdRef="LogMessage_19" Message="[&quot;Z&quot;]" />
+                                    <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke TakeScreenshot workflow" sap:VirtualizedContainerService.HintSize="338,114" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_3" UnSafe="False" WorkflowFileName="Framework\TakeScreenshot.xaml">
                                       <ui:InvokeWorkflowFile.Arguments>
                                         <InArgument x:TypeArguments="x:String" x:Key="in_Folder">[in_Config("ExScreenshotsFolderPath").ToString]</InArgument>
                                         <InOutArgument x:TypeArguments="x:String" x:Key="io_FilePath">[str_pathScreenshot]</InOutArgument>
                                       </ui:InvokeWorkflowFile.Arguments>
                                     </ui:InvokeWorkflowFile>
-                                    <ui:SendOutlookMail Account="{x:Null}" Bcc="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" TimeoutMS="{x:Null}" Body="le robot n'a pas pu se connecter à TDL Admin" DisplayName="Send Outlook Mail Message" sap:VirtualizedContainerService.HintSize="334,147" sap2010:WorkflowViewState.IdRef="SendOutlookMail_7" Importance="Normal" IsBodyHtml="False" IsDraft="False" Sensitivity="Normal" Subject="Error robot" To="a.dabbabi@humans4help.com">
-                                      <ui:SendOutlookMail.Files>
+                                    <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" From="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" SecurePassword="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Body="[&quot;Bonjour,&quot;+system.Environment.NewLine+system.Environment.NewLine+&quot;Le robot n'a pas pu se connecter à TDL Admin&quot;+system.Environment.NewLine+system.Environment.NewLine+&quot;Merci&quot;]" DisplayName="Send SMTP Mail Message" Email="[in_str_usernameSMTP]" EnableSSL="True" sap:VirtualizedContainerService.HintSize="338,148" sap2010:WorkflowViewState.IdRef="SendMail_9" IgnoreCRL="False" IsBodyHtml="False" Name="RPA TDL Admin" Password="[in_str_passwordSMTP]" Port="587" SecureConnection="Auto" Server="smtp.office365.com" Subject="Error robot" To="[Config(&quot;adresseMailForErrorMSG&quot;).ToString]">
+                                      <ui:SendMail.Files>
                                         <scg:List x:TypeArguments="InArgument(x:String)" Capacity="4">
                                           <InArgument x:TypeArguments="x:String">[str_pathScreenshot]</InArgument>
                                         </scg:List>
-                                      </ui:SendOutlookMail.Files>
-                                    </ui:SendOutlookMail>
-                                    <Throw Exception="[New SystemException(&quot;Le robot n'a pas pu ouvrir le formulaire sur TDL Admin&quot;)]" sap:VirtualizedContainerService.HintSize="334,22" sap2010:WorkflowViewState.IdRef="Throw_10" />
+                                      </ui:SendMail.Files>
+                                    </ui:SendMail>
+                                    <Throw Exception="[New SystemException(&quot;Le robot n'a pas pu ouvrir le formulaire sur TDL Admin&quot;)]" sap:VirtualizedContainerService.HintSize="338,25" sap2010:WorkflowViewState.IdRef="Throw_10" />
                                   </Sequence>
                                 </If.Then>
                                 <If.Else>
@@ -537,22 +596,22 @@
                       </scg:Dictionary>
                     </sap:WorkflowViewStateService.ViewState>
                   </ui:CommentOut>
-                  <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="610,52.6666666666667" sap2010:WorkflowViewState.IdRef="CommentOut_3">
+                  <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="650,53" sap2010:WorkflowViewState.IdRef="CommentOut_3">
                     <ui:CommentOut.Body>
-                      <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="610,1698.66666666667" sap2010:WorkflowViewState.IdRef="Sequence_44">
+                      <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="670,1764" sap2010:WorkflowViewState.IdRef="Sequence_44">
                         <sap:WorkflowViewStateService.ViewState>
                           <scg:Dictionary x:TypeArguments="x:String, x:Object">
                             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                           </scg:Dictionary>
                         </sap:WorkflowViewStateService.ViewState>
-                        <Sequence DisplayName="S_Click&quot; login&quot;" sap:VirtualizedContainerService.HintSize="568,1582.66666666667" sap2010:WorkflowViewState.IdRef="Sequence_39">
+                        <Sequence DisplayName="S_Click&quot; login&quot;" sap:VirtualizedContainerService.HintSize="608,1654" sap2010:WorkflowViewState.IdRef="Sequence_39">
                           <sap:WorkflowViewStateService.ViewState>
                             <scg:Dictionary x:TypeArguments="x:String, x:Object">
                               <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                               <x:Boolean x:Key="IsPinned">False</x:Boolean>
                             </scg:Dictionary>
                           </sap:WorkflowViewStateService.ViewState>
-                          <Assign sap:VirtualizedContainerService.HintSize="526,62" sap2010:WorkflowViewState.IdRef="Assign_17">
+                          <Assign sap:VirtualizedContainerService.HintSize="546,61" sap2010:WorkflowViewState.IdRef="Assign_17">
                             <Assign.To>
                               <OutArgument x:TypeArguments="x:Boolean">[bool_TDLWindowExist]</OutArgument>
                             </Assign.To>
@@ -560,13 +619,13 @@
                               <InArgument x:TypeArguments="x:Boolean">[new Boolean]</InArgument>
                             </Assign.Value>
                           </Assign>
-                          <Sequence DisplayName="Action" sap:VirtualizedContainerService.HintSize="526,1404" sap2010:WorkflowViewState.IdRef="Sequence_38">
+                          <Sequence DisplayName="Action" sap:VirtualizedContainerService.HintSize="546,1442" sap2010:WorkflowViewState.IdRef="Sequence_38">
                             <sap:WorkflowViewStateService.ViewState>
                               <scg:Dictionary x:TypeArguments="x:String, x:Object">
                                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                               </scg:Dictionary>
                             </sap:WorkflowViewStateService.ViewState>
-                            <Assign DisplayName="A_incrementer de compteur des tentatives" sap:VirtualizedContainerService.HintSize="484,62" sap2010:WorkflowViewState.IdRef="Assign_18">
+                            <Assign DisplayName="A_incrementer de compteur des tentatives" sap:VirtualizedContainerService.HintSize="484,61" sap2010:WorkflowViewState.IdRef="Assign_18">
                               <Assign.To>
                                 <OutArgument x:TypeArguments="x:Int32">[int_tentativeDeConnexion]</OutArgument>
                               </Assign.To>
@@ -574,8 +633,8 @@
                                 <InArgument x:TypeArguments="x:Int32">[int_tentativeDeConnexion+1]</InArgument>
                               </Assign.Value>
                             </Assign>
-                            <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="484,94.6666666666667" sap2010:WorkflowViewState.IdRef="LogMessage_12" Message="[&quot;Tentative Click login :&quot;+int_tentativeDeConnexion.ToString]" />
-                            <ui:Click AlterIfDisabled="{x:Null}" DelayBefore="{x:Null}" DelayMS="{x:Null}" SendWindowMessages="{x:Null}" SimulateClick="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="C_Button &quot;Login&quot;" sap:VirtualizedContainerService.HintSize="484,106" sap2010:WorkflowViewState.IdRef="Click_5" KeyModifiers="None" MouseButton="BTN_LEFT">
+                            <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="484,94" sap2010:WorkflowViewState.IdRef="LogMessage_12" Message="[&quot;Tentative Click login :&quot;+int_tentativeDeConnexion.ToString]" />
+                            <ui:Click AlterIfDisabled="{x:Null}" DelayBefore="{x:Null}" DelayMS="{x:Null}" SendWindowMessages="{x:Null}" SimulateClick="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="C_Button &quot;Login&quot;" sap:VirtualizedContainerService.HintSize="484,107" sap2010:WorkflowViewState.IdRef="Click_5" KeyModifiers="None" MouseButton="BTN_LEFT">
                               <ui:Click.CursorPosition>
                                 <ui:CursorPosition Position="Center">
                                   <ui:CursorPosition.OffsetX>
@@ -594,7 +653,7 @@
                                 </ui:Target>
                               </ui:Click.Target>
                             </ui:Click>
-                            <ui:UiElementExists DisplayName="Element Exists 'Static'" Exists="[bool_MSGErrLogin]" sap:VirtualizedContainerService.HintSize="484,106" sap2010:WorkflowViewState.IdRef="UiElementExists_9">
+                            <ui:UiElementExists DisplayName="Element Exists 'Static'" Exists="[bool_MSGErrLogin]" sap:VirtualizedContainerService.HintSize="484,107" sap2010:WorkflowViewState.IdRef="UiElementExists_9">
                               <ui:UiElementExists.Target>
                                 <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="a37f365e-bfa2-451a-8569-5b0800fff2ae" InformativeScreenshot="b236eb3448fc64e8bae0856534158e21" Selector="&lt;wnd app='tdladmin.exe' cls='#32770' title='TDL-ADMIN' /&gt;&lt;wnd ctrlid='65535' title='TCBLogin: MT-Fehler*' aaname='TCBLogin: MT-Fehler*' /&gt;">
                                   <ui:Target.TimeoutMS>
@@ -606,29 +665,29 @@
                                 </ui:Target>
                               </ui:UiElementExists.Target>
                             </ui:UiElementExists>
-                            <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="484,94.6666666666667" sap2010:WorkflowViewState.IdRef="LogMessage_13" Message="[bool_MSGErrLogin]" />
-                            <If Condition="[int_tentativeDeConnexion=3 and bool_MSGErrLogin]" sap:VirtualizedContainerService.HintSize="484,648.666666666667" sap2010:WorkflowViewState.IdRef="If_6">
+                            <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="484,94" sap2010:WorkflowViewState.IdRef="LogMessage_13" Message="[bool_MSGErrLogin]" />
+                            <If Condition="[int_tentativeDeConnexion=3 and bool_MSGErrLogin]" sap:VirtualizedContainerService.HintSize="484,668" sap2010:WorkflowViewState.IdRef="If_6">
                               <If.Then>
-                                <Sequence sap:VirtualizedContainerService.HintSize="376,457.333333333333" sap2010:WorkflowViewState.IdRef="Sequence_36">
+                                <Sequence sap:VirtualizedContainerService.HintSize="400,478" sap2010:WorkflowViewState.IdRef="Sequence_36">
                                   <sap:WorkflowViewStateService.ViewState>
                                     <scg:Dictionary x:TypeArguments="x:String, x:Object">
                                       <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                                     </scg:Dictionary>
                                   </sap:WorkflowViewStateService.ViewState>
-                                  <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke TakeScreenshot workflow" sap:VirtualizedContainerService.HintSize="334,114" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_2" UnSafe="False" WorkflowFileName="Framework\TakeScreenshot.xaml">
+                                  <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke TakeScreenshot workflow" sap:VirtualizedContainerService.HintSize="338,114" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_2" UnSafe="False" WorkflowFileName="Framework\TakeScreenshot.xaml">
                                     <ui:InvokeWorkflowFile.Arguments>
                                       <InArgument x:TypeArguments="x:String" x:Key="in_Folder">[in_Config("ExScreenshotsFolderPath").ToString]</InArgument>
                                       <InOutArgument x:TypeArguments="x:String" x:Key="io_FilePath">[str_pathScreenshot]</InOutArgument>
                                     </ui:InvokeWorkflowFile.Arguments>
                                   </ui:InvokeWorkflowFile>
-                                  <ui:SendOutlookMail Account="{x:Null}" Bcc="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" TimeoutMS="{x:Null}" Body="le robot n'a pas pu se connecter à TDL Admin" DisplayName="Send Outlook Mail Message" sap:VirtualizedContainerService.HintSize="334,149.333333333333" sap2010:WorkflowViewState.IdRef="SendOutlookMail_5" Importance="Normal" IsBodyHtml="False" IsDraft="False" Sensitivity="Normal" Subject="Error robot" To="a.dabbabi@humans4help.com">
-                                    <ui:SendOutlookMail.Files>
+                                  <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" From="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" SecurePassword="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Body="[&quot;Bonjour,&quot;+system.Environment.NewLine+system.Environment.NewLine+&quot;Le robot n'a pas pu se connecter à TDL Admin&quot;+system.Environment.NewLine+system.Environment.NewLine+&quot;Merci&quot;]" DisplayName="Send SMTP Mail Message" Email="[in_str_usernameSMTP]" EnableSSL="True" sap:VirtualizedContainerService.HintSize="338,148" sap2010:WorkflowViewState.IdRef="SendMail_8" IgnoreCRL="False" IsBodyHtml="False" Name="RPA TDL Admin" Password="[in_str_passwordSMTP]" Port="587" SecureConnection="Auto" Server="smtp.office365.com" Subject="Error robot" To="[in_Config(&quot;adresseMailForErrorMSG&quot;).ToString]">
+                                    <ui:SendMail.Files>
                                       <scg:List x:TypeArguments="InArgument(x:String)" Capacity="4">
                                         <InArgument x:TypeArguments="x:String">[str_pathScreenshot]</InArgument>
                                       </scg:List>
-                                    </ui:SendOutlookMail.Files>
-                                  </ui:SendOutlookMail>
-                                  <Throw Exception="[New SystemException(&quot;Le robot n'a pas pu ouvrir le formulaire sur TDL Admin&quot;)]" sap:VirtualizedContainerService.HintSize="334,22" sap2010:WorkflowViewState.IdRef="Throw_8" />
+                                    </ui:SendMail.Files>
+                                  </ui:SendMail>
+                                  <Throw Exception="[New SystemException(&quot;Le robot n'a pas pu ouvrir le formulaire sur TDL Admin&quot;)]" sap:VirtualizedContainerService.HintSize="338,25" sap2010:WorkflowViewState.IdRef="Throw_8" />
                                 </Sequence>
                               </If.Then>
                               <If.Else>
@@ -657,7 +716,7 @@
             </ui:RetryScope.ActivityBody>
             <ui:RetryScope.Condition>
               <ActivityFunc x:TypeArguments="x:Boolean">
-                <ui:CheckTrue ErrorMessage="{x:Null}" DisplayName="Check True" Expression="[bool_TDLWindowExist]" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="CheckTrue_2" />
+                <ui:CheckTrue ErrorMessage="{x:Null}" DisplayName="Check True" Expression="[bool_TDLWindowExist]" sap:VirtualizedContainerService.HintSize="334,88" sap2010:WorkflowViewState.IdRef="CheckTrue_2" />
               </ActivityFunc>
             </ui:RetryScope.Condition>
             <sap:WorkflowViewStateService.ViewState>
@@ -669,7 +728,7 @@
           </ui:RetryScope>
         </TryCatch.Try>
         <TryCatch.Catches>
-          <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="698.666666666667,22" sap2010:WorkflowViewState.IdRef="Catch`1_2">
+          <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="758,22" sap2010:WorkflowViewState.IdRef="Catch`1_2">
             <sap:WorkflowViewStateService.ViewState>
               <scg:Dictionary x:TypeArguments="x:String, x:Object">
                 <x:Boolean x:Key="IsExpanded">False</x:Boolean>
@@ -680,46 +739,51 @@
               <ActivityAction.Argument>
                 <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
               </ActivityAction.Argument>
-              <Sequence sap:VirtualizedContainerService.HintSize="988.666666666667,1150" sap2010:WorkflowViewState.IdRef="Sequence_52">
+              <Sequence sap:VirtualizedContainerService.HintSize="1053,1146" sap2010:WorkflowViewState.IdRef="Sequence_52">
                 <sap:WorkflowViewStateService.ViewState>
                   <scg:Dictionary x:TypeArguments="x:String, x:Object">
                     <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                   </scg:Dictionary>
                 </sap:WorkflowViewStateService.ViewState>
-                <If Condition="[bool_MSGErrLogin and int_tentativeDeConnexionTDL=3]" sap:VirtualizedContainerService.HintSize="948,1067.33333333333" sap2010:WorkflowViewState.IdRef="If_8">
+                <If Condition="[bool_MSGErrLogin and int_tentativeDeConnexionTDL=3]" sap:VirtualizedContainerService.HintSize="991,1077" sap2010:WorkflowViewState.IdRef="If_8">
                   <If.Then>
-                    <Sequence sap:VirtualizedContainerService.HintSize="376,599.333333333333" sap2010:WorkflowViewState.IdRef="Sequence_47">
+                    <Sequence sap:VirtualizedContainerService.HintSize="400,480" sap2010:WorkflowViewState.IdRef="Sequence_47">
                       <sap:WorkflowViewStateService.ViewState>
                         <scg:Dictionary x:TypeArguments="x:String, x:Object">
                           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                           <x:Boolean x:Key="IsPinned">False</x:Boolean>
                         </scg:Dictionary>
                       </sap:WorkflowViewStateService.ViewState>
-                      <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,94.6666666666667" sap2010:WorkflowViewState.IdRef="LogMessage_23" Message="[&quot;Z&quot;]" />
-                      <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke TakeScreenshot workflow" sap:VirtualizedContainerService.HintSize="334,114" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_5" UnSafe="False" WorkflowFileName="Framework\TakeScreenshot.xaml">
+                      <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke TakeScreenshot workflow" sap:VirtualizedContainerService.HintSize="338,114" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_5" UnSafe="False" WorkflowFileName="Framework\TakeScreenshot.xaml">
                         <ui:InvokeWorkflowFile.Arguments>
-                          <InArgument x:TypeArguments="x:String" x:Key="in_Folder">[in_Config("ExScreenshotsFolderPath").ToString]</InArgument>
-                          <InOutArgument x:TypeArguments="x:String" x:Key="io_FilePath">[str_pathScreenshot]</InOutArgument>
+                          <InArgument x:TypeArguments="x:String" x:Key="in_Folder">
+                            <mva:VisualBasicValue x:TypeArguments="x:String" ExpressionText="in_Config(&quot;ExScreenshotsFolderPath&quot;).ToString" />
+                          </InArgument>
+                          <InOutArgument x:TypeArguments="x:String" x:Key="io_FilePath">
+                            <mva:VisualBasicReference x:TypeArguments="x:String" ExpressionText="path_screenshot" />
+                          </InOutArgument>
                         </ui:InvokeWorkflowFile.Arguments>
                       </ui:InvokeWorkflowFile>
-                      <ui:SendOutlookMail Account="{x:Null}" Bcc="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" TimeoutMS="{x:Null}" Body="le robot n'a pas pu se connecter à TDL Admin" DisplayName="Send Outlook Mail Message" sap:VirtualizedContainerService.HintSize="334,156.666666666667" sap2010:WorkflowViewState.IdRef="SendOutlookMail_9" Importance="Normal" IsBodyHtml="False" IsDraft="False" Sensitivity="Normal" Subject="Error robot" To="a.dabbabi@humans4help.com">
-                        <ui:SendOutlookMail.Files>
+                      <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" From="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" SecurePassword="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Body="[&quot;Bonjour,&quot;+system.Environment.NewLine+system.Environment.NewLine+&quot;Le robot n'a pas pu se connecter à TDL Admin&quot;+system.Environment.NewLine+system.Environment.NewLine+&quot;Merci&quot;]" DisplayName="Send SMTP Mail Message" Email="[in_str_usernameSMTP]" EnableSSL="True" sap:VirtualizedContainerService.HintSize="338,150" sap2010:WorkflowViewState.IdRef="SendMail_5" IgnoreCRL="False" IsBodyHtml="False" Name="RPA TDL Admin" Password="[in_str_passwordSMTP]" Port="587" SecureConnection="Auto" Server="smtp.office365.com" Subject="Error robot" To="[in_Config(&quot;adresseMailForErrorMSG&quot;).ToString]">
+                        <ui:SendMail.Files>
                           <scg:List x:TypeArguments="InArgument(x:String)" Capacity="4">
-                            <InArgument x:TypeArguments="x:String">[str_pathScreenshot]</InArgument>
+                            <InArgument x:TypeArguments="x:String">
+                              <mva:VisualBasicValue x:TypeArguments="x:String" ExpressionText="path_screenshot" />
+                            </InArgument>
                           </scg:List>
-                        </ui:SendOutlookMail.Files>
-                      </ui:SendOutlookMail>
-                      <Throw Exception="[New SystemException(&quot;Le robot n'a pas pu ouvrir le formulaire sur TDL Admin&quot;)]" sap:VirtualizedContainerService.HintSize="334,22" sap2010:WorkflowViewState.IdRef="Throw_12" />
+                        </ui:SendMail.Files>
+                      </ui:SendMail>
+                      <Throw Exception="[New SystemException(&quot;Le robot n'a pas pu ouvrir le formulaire sur TDL Admin&quot;)]" sap:VirtualizedContainerService.HintSize="338,25" sap2010:WorkflowViewState.IdRef="Throw_12" />
                     </Sequence>
                   </If.Then>
                   <If.Else>
-                    <Sequence sap:VirtualizedContainerService.HintSize="526,886" sap2010:WorkflowViewState.IdRef="Sequence_48">
+                    <Sequence sap:VirtualizedContainerService.HintSize="546,916" sap2010:WorkflowViewState.IdRef="Sequence_48">
                       <sap:WorkflowViewStateService.ViewState>
                         <scg:Dictionary x:TypeArguments="x:String, x:Object">
                           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                         </scg:Dictionary>
                       </sap:WorkflowViewStateService.ViewState>
-                      <If Condition="[bool_TDLWindowExist= False and int_tentativeDeConnexionTDL=3]" sap:VirtualizedContainerService.HintSize="484,794" sap2010:WorkflowViewState.IdRef="If_9">
+                      <If Condition="[bool_TDLWindowExist= False and int_tentativeDeConnexionTDL=3]" sap:VirtualizedContainerService.HintSize="484,805" sap2010:WorkflowViewState.IdRef="If_9">
                         <sap:WorkflowViewStateService.ViewState>
                           <scg:Dictionary x:TypeArguments="x:String, x:Object">
                             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -727,27 +791,33 @@
                           </scg:Dictionary>
                         </sap:WorkflowViewStateService.ViewState>
                         <If.Then>
-                          <Sequence sap:VirtualizedContainerService.HintSize="376,599.333333333333" sap2010:WorkflowViewState.IdRef="Sequence_46">
+                          <Sequence sap:VirtualizedContainerService.HintSize="400,614" sap2010:WorkflowViewState.IdRef="Sequence_46">
                             <sap:WorkflowViewStateService.ViewState>
                               <scg:Dictionary x:TypeArguments="x:String, x:Object">
                                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                               </scg:Dictionary>
                             </sap:WorkflowViewStateService.ViewState>
-                            <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,94.6666666666667" sap2010:WorkflowViewState.IdRef="LogMessage_22" Message="[&quot;1&quot;]" />
-                            <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke TakeScreenshot workflow" sap:VirtualizedContainerService.HintSize="334,114" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_4" UnSafe="False" WorkflowFileName="Framework\TakeScreenshot.xaml">
+                            <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="338,94" sap2010:WorkflowViewState.IdRef="LogMessage_22" Message="[&quot;1&quot;]" />
+                            <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke TakeScreenshot workflow" sap:VirtualizedContainerService.HintSize="338,114" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_4" UnSafe="False" WorkflowFileName="Framework\TakeScreenshot.xaml">
                               <ui:InvokeWorkflowFile.Arguments>
-                                <InArgument x:TypeArguments="x:String" x:Key="in_Folder">[in_Config("ExScreenshotsFolderPath").ToString]</InArgument>
-                                <InOutArgument x:TypeArguments="x:String" x:Key="io_FilePath">[str_pathScreenshot]</InOutArgument>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_Folder">
+                                  <mva:VisualBasicValue x:TypeArguments="x:String" ExpressionText="in_Config(&quot;ExScreenshotsFolderPath&quot;).ToString" />
+                                </InArgument>
+                                <InOutArgument x:TypeArguments="x:String" x:Key="io_FilePath">
+                                  <mva:VisualBasicReference x:TypeArguments="x:String" ExpressionText="path_screenshot" />
+                                </InOutArgument>
                               </ui:InvokeWorkflowFile.Arguments>
                             </ui:InvokeWorkflowFile>
-                            <ui:SendOutlookMail Account="{x:Null}" Bcc="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" TimeoutMS="{x:Null}" Body="le robot n'a pas pu se connecter à TDL Admin" DisplayName="Send Outlook Mail Message" sap:VirtualizedContainerService.HintSize="334,156.666666666667" sap2010:WorkflowViewState.IdRef="SendOutlookMail_8" Importance="Normal" IsBodyHtml="False" IsDraft="False" Sensitivity="Normal" Subject="Erreur robot" To="[in_config(&quot;adresseMailForErrorMSG&quot;).ToString]">
-                              <ui:SendOutlookMail.Files>
+                            <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" From="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" SecurePassword="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Body="[&quot;Bonjour,&quot;+system.Environment.NewLine+system.Environment.NewLine+&quot;le robot n'a pas pu se connecter à TDL Admin&quot;+system.Environment.NewLine+system.Environment.NewLine+&quot;Merci&quot;]" DisplayName="Send SMTP Mail Message" Email="[in_str_usernameSMTP]" EnableSSL="True" sap:VirtualizedContainerService.HintSize="338,150" sap2010:WorkflowViewState.IdRef="SendMail_7" IgnoreCRL="False" IsBodyHtml="False" Name="RPA TDL Admin" Password="[in_str_passwordSMTP]" Port="587" SecureConnection="Auto" Server="smtp.office365.com" Subject="Error robot" To="[in_Config(&quot;adresseMailForErrorMSG&quot;).ToString]">
+                              <ui:SendMail.Files>
                                 <scg:List x:TypeArguments="InArgument(x:String)" Capacity="4">
-                                  <InArgument x:TypeArguments="x:String">[str_pathScreenshot]</InArgument>
+                                  <InArgument x:TypeArguments="x:String">
+                                    <mva:VisualBasicValue x:TypeArguments="x:String" ExpressionText="path_screenshot" />
+                                  </InArgument>
                                 </scg:List>
-                              </ui:SendOutlookMail.Files>
-                            </ui:SendOutlookMail>
-                            <Throw Exception="[New SystemException(&quot;le robot n'a pas pu se connecter à TDL Admin&quot;)]" sap:VirtualizedContainerService.HintSize="334,22" sap2010:WorkflowViewState.IdRef="Throw_11" />
+                              </ui:SendMail.Files>
+                            </ui:SendMail>
+                            <Throw Exception="[New SystemException(&quot;le robot n'a pas pu se connecter à TDL Admin&quot;)]" sap:VirtualizedContainerService.HintSize="338,25" sap2010:WorkflowViewState.IdRef="Throw_11" />
                           </Sequence>
                         </If.Then>
                         <If.Else>
@@ -768,19 +838,32 @@
           </Catch>
         </TryCatch.Catches>
       </TryCatch>
-      <ui:WindowScope ApplicationWindow="{x:Null}" SearchScope="{x:Null}" TimeoutMS="{x:Null}" Window="{x:Null}" DisplayName="Attach Window 'tdladmin.exe TDL-ADMIN'" sap:VirtualizedContainerService.HintSize="732.666666666667,1950.66666666667" sap2010:WorkflowViewState.IdRef="WindowScope_1" InformativeScreenshot="0326bb68d79fd96313e60d60d45ff415" Selector="&lt;wnd app='tdladmin.exe' cls='#32770' title='TDL-ADMIN*' /&gt;">
+      <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DisplayName="Send Hotkey" sap:VirtualizedContainerService.HintSize="792,117" sap2010:WorkflowViewState.IdRef="SendHotkey_1" Key="tab" KeyModifiers="Alt" SpecialKey="True">
+        <ui:SendHotkey.Target>
+          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Selector="{x:Null}" Id="c5481edc-f400-46b0-93cd-eeb09c395dd3">
+            <ui:Target.TimeoutMS>
+              <InArgument x:TypeArguments="x:Int32" />
+            </ui:Target.TimeoutMS>
+            <ui:Target.WaitForReady>
+              <InArgument x:TypeArguments="ui:WaitForReady" />
+            </ui:Target.WaitForReady>
+          </ui:Target>
+        </ui:SendHotkey.Target>
+      </ui:SendHotkey>
+      <ui:WindowScope ApplicationWindow="{x:Null}" SearchScope="{x:Null}" TimeoutMS="{x:Null}" Window="{x:Null}" DisplayName="Attach Window 'tdladmin.exe TDL-ADMIN'" sap:VirtualizedContainerService.HintSize="792,3333" sap2010:WorkflowViewState.IdRef="WindowScope_1" InformativeScreenshot="0326bb68d79fd96313e60d60d45ff415" Selector="&lt;wnd app='tdladmin.exe' cls='#32770' title='TDL-ADMIN*' /&gt;">
         <ui:WindowScope.Body>
           <ActivityAction x:TypeArguments="x:Object">
             <ActivityAction.Argument>
               <DelegateInArgument x:TypeArguments="x:Object" Name="ContextTarget" />
             </ActivityAction.Argument>
-            <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="610,1804.66666666667" sap2010:WorkflowViewState.IdRef="Sequence_30">
+            <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="650,3186" sap2010:WorkflowViewState.IdRef="Sequence_30">
               <sap:WorkflowViewStateService.ViewState>
                 <scg:Dictionary x:TypeArguments="x:String, x:Object">
                   <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                 </scg:Dictionary>
               </sap:WorkflowViewStateService.ViewState>
-              <Assign DisplayName="A_initiliser le compteur des tentatives" sap:VirtualizedContainerService.HintSize="568,62" sap2010:WorkflowViewState.IdRef="Assign_10">
+              <ui:MaximizeWindow Window="{x:Null}" DisplayName="Maximize Window" sap:VirtualizedContainerService.HintSize="588,25" sap2010:WorkflowViewState.IdRef="MaximizeWindow_1" />
+              <Assign DisplayName="A_initiliser le compteur des tentatives" sap:VirtualizedContainerService.HintSize="588,61" sap2010:WorkflowViewState.IdRef="Assign_10">
                 <Assign.To>
                   <OutArgument x:TypeArguments="x:Int32">[int_tentativeDeConnexion]</OutArgument>
                 </Assign.To>
@@ -788,16 +871,16 @@
                   <InArgument x:TypeArguments="x:Int32">0</InArgument>
                 </Assign.Value>
               </Assign>
-              <ui:RetryScope DisplayName="RS Click &quot;System data&quot;" sap:VirtualizedContainerService.HintSize="568,1610.66666666667" sap2010:WorkflowViewState.IdRef="RetryScope_5" NumberOfRetries="3" RetryInterval="00:00:05">
+              <ui:RetryScope sap2010:Annotation.AnnotationText="Le robot clique sur system data pour acceder au formulaire &#xA;Le robot fait 3 tentatives sinon il genere une &quot;systeme exception&quot;" DisplayName="RS Click &quot;System data&quot;" sap:VirtualizedContainerService.HintSize="588,2909" sap2010:WorkflowViewState.IdRef="RetryScope_5" NumberOfRetries="3" RetryInterval="00:00:05">
                 <ui:RetryScope.ActivityBody>
                   <ActivityAction>
-                    <Sequence DisplayName="Action" sap:VirtualizedContainerService.HintSize="526,1363.33333333333" sap2010:WorkflowViewState.IdRef="Sequence_29">
+                    <Sequence DisplayName="Action" sap:VirtualizedContainerService.HintSize="546,2616" sap2010:WorkflowViewState.IdRef="Sequence_29">
                       <sap:WorkflowViewStateService.ViewState>
                         <scg:Dictionary x:TypeArguments="x:String, x:Object">
                           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                         </scg:Dictionary>
                       </sap:WorkflowViewStateService.ViewState>
-                      <Assign sap:VirtualizedContainerService.HintSize="484,62" sap2010:WorkflowViewState.IdRef="Assign_16">
+                      <Assign sap:VirtualizedContainerService.HintSize="484,61" sap2010:WorkflowViewState.IdRef="Assign_16">
                         <Assign.To>
                           <OutArgument x:TypeArguments="x:Boolean">[bool_TDLWindowExist]</OutArgument>
                         </Assign.To>
@@ -805,7 +888,7 @@
                           <InArgument x:TypeArguments="x:Boolean">[new Boolean]</InArgument>
                         </Assign.Value>
                       </Assign>
-                      <Assign DisplayName="A_incrementer de compteur des tentatives" sap:VirtualizedContainerService.HintSize="484,62" sap2010:WorkflowViewState.IdRef="Assign_11">
+                      <Assign DisplayName="A_incrementer de compteur des tentatives" sap:VirtualizedContainerService.HintSize="484,61" sap2010:WorkflowViewState.IdRef="Assign_11">
                         <Assign.To>
                           <OutArgument x:TypeArguments="x:Int32">[int_tentativeDeConnexion]</OutArgument>
                         </Assign.To>
@@ -813,64 +896,250 @@
                           <InArgument x:TypeArguments="x:Int32">[int_tentativeDeConnexion+1]</InArgument>
                         </Assign.Value>
                       </Assign>
-                      <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="484,94.6666666666667" sap2010:WorkflowViewState.IdRef="LogMessage_7" Message="[&quot;Tentative click system data :&quot;+int_tentativeDeConnexion.ToString]" />
-                      <ui:Click AlterIfDisabled="{x:Null}" DelayBefore="{x:Null}" DelayMS="{x:Null}" SendWindowMessages="{x:Null}" SimulateClick="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click &quot;System data&quot;" sap:VirtualizedContainerService.HintSize="484,106" sap2010:WorkflowViewState.IdRef="Click_2" KeyModifiers="None" MouseButton="BTN_LEFT">
-                        <ui:Click.CursorPosition>
-                          <ui:CursorPosition Position="Center">
-                            <ui:CursorPosition.OffsetX>
-                              <InArgument x:TypeArguments="x:Int32" />
-                            </ui:CursorPosition.OffsetX>
-                            <ui:CursorPosition.OffsetY>
-                              <InArgument x:TypeArguments="x:Int32" />
-                            </ui:CursorPosition.OffsetY>
-                          </ui:CursorPosition>
-                        </ui:Click.CursorPosition>
-                        <ui:Click.Target>
-                          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="98594033-880d-4a60-bdf2-9413d836e2e4" InformativeScreenshot="bb8fae8e41eef861a393e7561c782324" Selector="&lt;wnd app='tdladmin.exe' cls='#32770' title='TDL-ADMIN*' /&gt;&lt;ctrl automationid='MenuBar' name='Application' role='menu bar' /&gt;&lt;ctrl name='System data' role='menu item' /&gt;" WaitForReady="COMPLETE">
-                            <ui:Target.TimeoutMS>
-                              <InArgument x:TypeArguments="x:Int32" />
-                            </ui:Target.TimeoutMS>
-                          </ui:Target>
-                        </ui:Click.Target>
-                      </ui:Click>
-                      <ui:Click AlterIfDisabled="{x:Null}" DelayBefore="{x:Null}" DelayMS="{x:Null}" SendWindowMessages="{x:Null}" SimulateClick="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'menu item  Clients...'" sap:VirtualizedContainerService.HintSize="484,106" sap2010:WorkflowViewState.IdRef="Click_4" KeyModifiers="None" MouseButton="BTN_LEFT">
-                        <ui:Click.CursorPosition>
-                          <ui:CursorPosition Position="Center">
-                            <ui:CursorPosition.OffsetX>
-                              <InArgument x:TypeArguments="x:Int32" />
-                            </ui:CursorPosition.OffsetX>
-                            <ui:CursorPosition.OffsetY>
-                              <InArgument x:TypeArguments="x:Int32" />
-                            </ui:CursorPosition.OffsetY>
-                          </ui:CursorPosition>
-                        </ui:Click.CursorPosition>
-                        <ui:Click.Target>
-                          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="a2b76f37-3a3b-46a8-9ab4-92c683a48f21" InformativeScreenshot="f1ddf9e02ceef9d03b274cd68eb71397" Selector="&lt;wnd app='tdladmin.exe' cls='#32768' idx='*' /&gt;&lt;ctrl name='System data' role='popup menu' /&gt;&lt;ctrl automationid='40181' /&gt;" WaitForReady="COMPLETE">
-                            <ui:Target.TimeoutMS>
-                              <InArgument x:TypeArguments="x:Int32" />
-                            </ui:Target.TimeoutMS>
-                          </ui:Target>
-                        </ui:Click.Target>
-                      </ui:Click>
-                      <ui:UiElementExists DisplayName="Element Exists 'tdladmin.exe Search'" Exists="[bool_TDLWindowExist]" sap:VirtualizedContainerService.HintSize="484,106" sap2010:WorkflowViewState.IdRef="UiElementExists_5">
-                        <ui:UiElementExists.Target>
-                          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="48ed3128-608e-4a3e-b019-1c0e47e4304b" InformativeScreenshot="7f0da2e88e9ab86442f500c2eb59a8e3" Selector="&lt;wnd app='tdladmin.exe' cls='#32770' title='Search for client' /&gt;" TimeoutMS="5000" WaitForReady="INTERACTIVE" />
-                        </ui:UiElementExists.Target>
-                      </ui:UiElementExists>
-                      <If Condition="[int_tentativeDeConnexion=3 and bool_TDLWindowExist =False]" sap:VirtualizedContainerService.HintSize="484,494.666666666667" sap2010:WorkflowViewState.IdRef="If_4">
-                        <If.Then>
-                          <Sequence sap:VirtualizedContainerService.HintSize="376,303.333333333333" sap2010:WorkflowViewState.IdRef="Sequence_27">
+                      <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="484,94" sap2010:WorkflowViewState.IdRef="LogMessage_7" Message="[&quot;Tentative click system data :&quot;+int_tentativeDeConnexion.ToString]" />
+                      <Sequence sap:VirtualizedContainerService.HintSize="484,808" sap2010:WorkflowViewState.IdRef="Sequence_63">
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                        <ui:ClickImage ContinueOnError="{x:Null}" DelayBefore="{x:Null}" DelayMS="{x:Null}" SendWindowMessages="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click Image 'tdladmin.exe  TDL-ADMIN'" sap:VirtualizedContainerService.HintSize="338,156" sap2010:WorkflowViewState.IdRef="ClickImage_1" KeyModifiers="None" MouseButton="BTN_LEFT">
+                          <ui:ClickImage.CursorPosition>
+                            <ui:CursorPosition Position="Center">
+                              <ui:CursorPosition.OffsetX>
+                                <InArgument x:TypeArguments="x:Int32" />
+                              </ui:CursorPosition.OffsetX>
+                              <ui:CursorPosition.OffsetY>
+                                <InArgument x:TypeArguments="x:Int32" />
+                              </ui:CursorPosition.OffsetY>
+                            </ui:CursorPosition>
+                          </ui:ClickImage.CursorPosition>
+                          <ui:ClickImage.Image>
+                            <ui:ImageTarget Image="{x:Null}" Accuracy="0.8" Profile="Basic" TargetImageBase64="iVBORw0KGgoAAAANSUhEUgAAAFEAAAAYCAYAAACC2BGSAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHESURBVFhH7VWBbcQgDGQuBmIepskyWSLKAi5gm9iUkKTwVdVwkvVvYvBx2GBgohtTxAGYIg7AFHEApogDMEUcgPsiLg6MMWQOFhr+u1jAGQt+JfeDuCfi6sFK4YLvH6v4e5tC3Mk3htM9EWMVWg99ud4uYkpmwKpsK3hrwMmKzGLjN25/t+D8fB3wpFThPM6VThtbjm8xfPU2z9c8BMR61nsl0OI4T7CUv87pe9w1HjwshzB57SiaSBQJID89jihPvfDDHBSHNseVH9cKfhYu+bU7GedxWhS9VmUyb8lJovVN44GIBDptJBsTiQrijVOMrpiClKpCMjyBgvyVT4jrqSuniKPDQOPxylrVuDaeixiQTpmOPP6PYvGvBLfgIbgglUQ8qyhJ/sontERUuWJH8fwWJxnXxs2HJbzGeTFs6yxYIu9CFdYTHuLWxKjdb7W4ls/A9artHKtLdQnPL9Y6jWvj0cOSy5yZEtJlLMdUSxzVli/tY6eBKMfx+JVopS8g8uqHRTx0xYFrTudxLfyonUvkB+Wl6BcxtbO8i96HDhG59O+V/H/GkHZ+O8y+7zCtz8y2bTCtz6aIA2yKOMCmiN22wRd5FyOIeU5cVwAAAABJRU5ErkJggg==" />
+                          </ui:ClickImage.Image>
+                          <ui:ClickImage.Target>
+                            <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Selector="{x:Null}" Id="ccb19d44-44a3-452e-8e17-a51e81d95445">
+                              <ui:Target.TimeoutMS>
+                                <InArgument x:TypeArguments="x:Int32" />
+                              </ui:Target.TimeoutMS>
+                              <ui:Target.WaitForReady>
+                                <InArgument x:TypeArguments="ui:WaitForReady" />
+                              </ui:Target.WaitForReady>
+                            </ui:Target>
+                          </ui:ClickImage.Target>
+                        </ui:ClickImage>
+                        <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="338,94" sap2010:WorkflowViewState.IdRef="LogMessage_26" Message="[&quot;system data clicked&quot;]" />
+                        <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DisplayName="Send Hotkey" sap:VirtualizedContainerService.HintSize="338,117" sap2010:WorkflowViewState.IdRef="SendHotkey_2" Key="down" KeyModifiers="None" SpecialKey="True">
+                          <ui:SendHotkey.Target>
+                            <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Selector="{x:Null}" Id="7d3de34e-bf8d-40b8-b2b2-b7f6b6db37b9">
+                              <ui:Target.TimeoutMS>
+                                <InArgument x:TypeArguments="x:Int32" />
+                              </ui:Target.TimeoutMS>
+                              <ui:Target.WaitForReady>
+                                <InArgument x:TypeArguments="ui:WaitForReady" />
+                              </ui:Target.WaitForReady>
+                            </ui:Target>
+                          </ui:SendHotkey.Target>
+                        </ui:SendHotkey>
+                        <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DisplayName="Send Hotkey" sap:VirtualizedContainerService.HintSize="338,117" sap2010:WorkflowViewState.IdRef="SendHotkey_3" Key="enter" KeyModifiers="None" SpecialKey="True">
+                          <ui:SendHotkey.Target>
+                            <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Selector="{x:Null}" Id="1ab5ce22-bf3f-4108-92dc-9a75e0a6c362">
+                              <ui:Target.TimeoutMS>
+                                <InArgument x:TypeArguments="x:Int32" />
+                              </ui:Target.TimeoutMS>
+                              <ui:Target.WaitForReady>
+                                <InArgument x:TypeArguments="ui:WaitForReady" />
+                              </ui:Target.WaitForReady>
+                            </ui:Target>
+                          </ui:SendHotkey.Target>
+                        </ui:SendHotkey>
+                        <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="338,53" sap2010:WorkflowViewState.IdRef="CommentOut_10">
+                          <ui:CommentOut.Body>
+                            <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="462,194" sap2010:WorkflowViewState.IdRef="Sequence_68">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                              <Sequence sap:VirtualizedContainerService.HintSize="400,83" sap2010:WorkflowViewState.IdRef="Sequence_62">
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                    <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                                <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke TakeScreenshot workflow" sap:VirtualizedContainerService.HintSize="338,114" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_13" UnSafe="False" WorkflowFileName="Framework\TakeScreenshot.xaml">
+                                  <ui:InvokeWorkflowFile.Arguments>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_Folder">[in_Config("ExScreenshotsFolderPath").ToString]</InArgument>
+                                    <InOutArgument x:TypeArguments="x:String" x:Key="io_FilePath">[path_screenshot]</InOutArgument>
+                                  </ui:InvokeWorkflowFile.Arguments>
+                                </ui:InvokeWorkflowFile>
+                                <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" From="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" SecurePassword="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Body="info" DisplayName="Send SMTP Mail Message" Email="[in_str_usernameSMTP]" EnableSSL="True" sap:VirtualizedContainerService.HintSize="338,148" sap2010:WorkflowViewState.IdRef="SendMail_14" IgnoreCRL="False" IsBodyHtml="False" Name="RPA TDL Admin" Password="[in_str_passwordSMTP]" Port="587" SecureConnection="Auto" Server="smtp.office365.com" Subject="Error robot" To="[in_Config(&quot;adresseMailForErrorMSG&quot;).ToString]">
+                                  <ui:SendMail.Files>
+                                    <scg:List x:TypeArguments="InArgument(x:String)" Capacity="4">
+                                      <InArgument x:TypeArguments="x:String">[path_screenshot]</InArgument>
+                                    </scg:List>
+                                  </ui:SendMail.Files>
+                                </ui:SendMail>
+                              </Sequence>
+                            </Sequence>
+                          </ui:CommentOut.Body>
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                        </ui:CommentOut>
+                      </Sequence>
+                      <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="484,53" sap2010:WorkflowViewState.IdRef="CommentOut_6">
+                        <ui:CommentOut.Body>
+                          <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="400,218" sap2010:WorkflowViewState.IdRef="Sequence_64">
                             <sap:WorkflowViewStateService.ViewState>
                               <scg:Dictionary x:TypeArguments="x:String, x:Object">
                                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                               </scg:Dictionary>
                             </sap:WorkflowViewStateService.ViewState>
-                            <ui:SendOutlookMail Account="{x:Null}" Bcc="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" TimeoutMS="{x:Null}" Body="Le robot n'a pas pu ouvrir le formulaire sur TDL Admin" DisplayName="Send Outlook Mail Message" sap:VirtualizedContainerService.HintSize="334,149.333333333333" sap2010:WorkflowViewState.IdRef="SendOutlookMail_3" Importance="Normal" IsBodyHtml="False" IsDraft="False" Sensitivity="Normal" Subject="Erreur robot" To="[in_config(&quot;adresseMailForErrorMSG&quot;).ToString]">
-                              <ui:SendOutlookMail.Files>
-                                <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
-                              </ui:SendOutlookMail.Files>
-                            </ui:SendOutlookMail>
-                            <Throw Exception="[New SystemException(&quot;Le robot n'a pas pu ouvrir le formulaire sur TDL Admin&quot;)]" sap:VirtualizedContainerService.HintSize="334,22" sap2010:WorkflowViewState.IdRef="Throw_6" />
+                            <ui:Click AlterIfDisabled="{x:Null}" DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" CursorMotionType="Smooth" DisplayName="Click &quot;System data&quot;" sap:VirtualizedContainerService.HintSize="338,107" sap2010:WorkflowViewState.IdRef="Click_8" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="True" SimulateClick="False">
+                              <ui:Click.CursorPosition>
+                                <ui:CursorPosition Position="Center">
+                                  <ui:CursorPosition.OffsetX>
+                                    <InArgument x:TypeArguments="x:Int32" />
+                                  </ui:CursorPosition.OffsetX>
+                                  <ui:CursorPosition.OffsetY>
+                                    <InArgument x:TypeArguments="x:Int32" />
+                                  </ui:CursorPosition.OffsetY>
+                                </ui:CursorPosition>
+                              </ui:Click.CursorPosition>
+                              <ui:Click.Target>
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="98594033-880d-4a60-bdf2-9413d836e2e4" InformativeScreenshot="bb8fae8e41eef861a393e7561c782324" Selector="&lt;wnd app='tdladmin.exe' cls='#32770' title='TDL-ADMIN*' /&gt;&lt;ctrl automationid='MenuBar' name='Application' role='menu bar' /&gt;&lt;ctrl name='System data' role='menu item' /&gt;" WaitForReady="COMPLETE">
+                                  <ui:Target.TimeoutMS>
+                                    <InArgument x:TypeArguments="x:Int32" />
+                                  </ui:Target.TimeoutMS>
+                                </ui:Target>
+                              </ui:Click.Target>
+                            </ui:Click>
+                          </Sequence>
+                        </ui:CommentOut.Body>
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                      </ui:CommentOut>
+                      <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="484,53" sap2010:WorkflowViewState.IdRef="CommentOut_7">
+                        <ui:CommentOut.Body>
+                          <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="400,205" sap2010:WorkflowViewState.IdRef="Sequence_65">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="338,94" sap2010:WorkflowViewState.IdRef="LogMessage_23" Message="[&quot;system data clicked&quot;]" />
+                          </Sequence>
+                        </ui:CommentOut.Body>
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                      </ui:CommentOut>
+                      <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="484,53" sap2010:WorkflowViewState.IdRef="CommentOut_8">
+                        <ui:CommentOut.Body>
+                          <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="400,218" sap2010:WorkflowViewState.IdRef="Sequence_66">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <ui:Click AlterIfDisabled="{x:Null}" DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" CursorMotionType="Smooth" DisplayName="Click 'menu item  Clients...'" sap:VirtualizedContainerService.HintSize="338,107" sap2010:WorkflowViewState.IdRef="Click_4" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="True" SimulateClick="False">
+                              <ui:Click.CursorPosition>
+                                <ui:CursorPosition Position="Center">
+                                  <ui:CursorPosition.OffsetX>
+                                    <InArgument x:TypeArguments="x:Int32" />
+                                  </ui:CursorPosition.OffsetX>
+                                  <ui:CursorPosition.OffsetY>
+                                    <InArgument x:TypeArguments="x:Int32" />
+                                  </ui:CursorPosition.OffsetY>
+                                </ui:CursorPosition>
+                              </ui:Click.CursorPosition>
+                              <ui:Click.Target>
+                                <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="a2b76f37-3a3b-46a8-9ab4-92c683a48f21" InformativeScreenshot="f1ddf9e02ceef9d03b274cd68eb71397" Selector="&lt;wnd app='tdladmin.exe' cls='#32768' idx='*' /&gt;&lt;ctrl name='System data' role='popup menu' /&gt;&lt;ctrl automationid='40181' /&gt;" WaitForReady="COMPLETE">
+                                  <ui:Target.TimeoutMS>
+                                    <InArgument x:TypeArguments="x:Int32" />
+                                  </ui:Target.TimeoutMS>
+                                </ui:Target>
+                              </ui:Click.Target>
+                            </ui:Click>
+                          </Sequence>
+                        </ui:CommentOut.Body>
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                      </ui:CommentOut>
+                      <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="484,53" sap2010:WorkflowViewState.IdRef="CommentOut_9">
+                        <ui:CommentOut.Body>
+                          <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="400,205" sap2010:WorkflowViewState.IdRef="Sequence_67">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="338,94" sap2010:WorkflowViewState.IdRef="LogMessage_24" Message="[&quot;Clients clicked&quot;]" />
+                          </Sequence>
+                        </ui:CommentOut.Body>
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                      </ui:CommentOut>
+                      <ui:UiElementExists DisplayName="Element Exists 'tdladmin.exe Search'" Exists="[bool_TDLWindowExist]" sap:VirtualizedContainerService.HintSize="484,107" sap2010:WorkflowViewState.IdRef="UiElementExists_5">
+                        <ui:UiElementExists.Target>
+                          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="48ed3128-608e-4a3e-b019-1c0e47e4304b" InformativeScreenshot="7f0da2e88e9ab86442f500c2eb59a8e3" Selector="&lt;wnd app='tdladmin.exe' cls='#32770' title='Search for client' /&gt;" TimeoutMS="5000" WaitForReady="INTERACTIVE" />
+                        </ui:UiElementExists.Target>
+                      </ui:UiElementExists>
+                      <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="484,94" sap2010:WorkflowViewState.IdRef="LogMessage_25" Message="[&quot;formulaire de recherche affiché ? &quot; +bool_TDLWindowExist.ToString]" />
+                      <If Condition="[int_tentativeDeConnexion=3 and bool_TDLWindowExist =False]" sap:VirtualizedContainerService.HintSize="484,668" sap2010:WorkflowViewState.IdRef="If_4">
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                        <If.Then>
+                          <Sequence sap:VirtualizedContainerService.HintSize="400,478" sap2010:WorkflowViewState.IdRef="Sequence_27">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke TakeScreenshot workflow" sap:VirtualizedContainerService.HintSize="338,114" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_12" UnSafe="False" WorkflowFileName="Framework\TakeScreenshot.xaml">
+                              <ui:InvokeWorkflowFile.Arguments>
+                                <InArgument x:TypeArguments="x:String" x:Key="in_Folder">
+                                  <mva:VisualBasicValue x:TypeArguments="x:String" ExpressionText="in_Config(&quot;ExScreenshotsFolderPath&quot;).ToString" />
+                                </InArgument>
+                                <InOutArgument x:TypeArguments="x:String" x:Key="io_FilePath">
+                                  <mva:VisualBasicReference x:TypeArguments="x:String" ExpressionText="path_screenshot" />
+                                </InOutArgument>
+                              </ui:InvokeWorkflowFile.Arguments>
+                            </ui:InvokeWorkflowFile>
+                            <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" From="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" SecurePassword="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Body="[&quot;Bonjour&quot;+system.Environment.NewLine+system.Environment.NewLine+&quot;Le robot n'a pas pu ouvrir le formulaire sur TDL&quot;+system.Environment.NewLine+system.Environment.NewLine+&quot;Merci&quot;]" DisplayName="Send SMTP Mail Message" Email="[in_str_usernameSMTP]" EnableSSL="True" sap:VirtualizedContainerService.HintSize="338,148" sap2010:WorkflowViewState.IdRef="SendMail_2" IgnoreCRL="False" IsBodyHtml="False" Name="RPA TDL Admin" Password="[in_str_passwordSMTP]" Port="587" SecureConnection="Auto" Server="smtp.office365.com" Subject="Error robot" To="[in_Config(&quot;adresseMailForErrorMSG&quot;).ToString]">
+                              <ui:SendMail.Files>
+                                <scg:List x:TypeArguments="InArgument(x:String)" Capacity="4">
+                                  <InArgument x:TypeArguments="x:String">
+                                    <mva:VisualBasicValue x:TypeArguments="x:String" ExpressionText="path_screenshot" />
+                                  </InArgument>
+                                </scg:List>
+                              </ui:SendMail.Files>
+                            </ui:SendMail>
+                            <Throw Exception="[New SystemException(&quot;Le robot n'a pas pu ouvrir le formulaire sur TDL Admin&quot;)]" sap:VirtualizedContainerService.HintSize="338,25" sap2010:WorkflowViewState.IdRef="Throw_6" />
                           </Sequence>
                         </If.Then>
                         <If.Else>
@@ -888,13 +1157,14 @@
                 </ui:RetryScope.ActivityBody>
                 <ui:RetryScope.Condition>
                   <ActivityFunc x:TypeArguments="x:Boolean">
-                    <ui:CheckTrue ErrorMessage="{x:Null}" DisplayName="Check True" Expression="[bool_TDLWindowExist]" sap:VirtualizedContainerService.HintSize="334,86.6666666666667" sap2010:WorkflowViewState.IdRef="CheckTrue_3" />
+                    <ui:CheckTrue ErrorMessage="{x:Null}" DisplayName="Check True" Expression="[bool_TDLWindowExist]" sap:VirtualizedContainerService.HintSize="334,88" sap2010:WorkflowViewState.IdRef="CheckTrue_3" />
                   </ActivityFunc>
                 </ui:RetryScope.Condition>
                 <sap:WorkflowViewStateService.ViewState>
                   <scg:Dictionary x:TypeArguments="x:String, x:Object">
                     <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                     <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
                   </scg:Dictionary>
                 </sap:WorkflowViewStateService.ViewState>
               </ui:RetryScope>
@@ -908,19 +1178,19 @@
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </ui:WindowScope>
-      <ui:WindowScope ApplicationWindow="{x:Null}" SearchScope="{x:Null}" TimeoutMS="{x:Null}" Window="{x:Null}" DisplayName="Attach Window 'tdladmin.exe Search'" sap:VirtualizedContainerService.HintSize="732.666666666667,1228.66666666667" sap2010:WorkflowViewState.IdRef="WindowScope_2" InformativeScreenshot="270cb33c40df114b559bea43d435a57c" Selector="&lt;wnd app='tdladmin.exe' cls='#32770' title='Search for client' /&gt;">
+      <ui:WindowScope ApplicationWindow="{x:Null}" SearchScope="{x:Null}" TimeoutMS="{x:Null}" Window="{x:Null}" sap2010:Annotation.AnnotationText="le robot " DisplayName="Attach Window 'tdladmin.exe Search'" sap:VirtualizedContainerService.HintSize="792,1453" sap2010:WorkflowViewState.IdRef="WindowScope_2" InformativeScreenshot="270cb33c40df114b559bea43d435a57c" Selector="&lt;wnd app='tdladmin.exe' cls='#32770' title='Search for client' /&gt;">
         <ui:WindowScope.Body>
           <ActivityAction x:TypeArguments="x:Object">
             <ActivityAction.Argument>
               <DelegateInArgument x:TypeArguments="x:Object" Name="ContextTarget" />
             </ActivityAction.Argument>
-            <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="526,1082.66666666667" sap2010:WorkflowViewState.IdRef="Sequence_31">
+            <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="546,1275" sap2010:WorkflowViewState.IdRef="Sequence_31">
               <sap:WorkflowViewStateService.ViewState>
                 <scg:Dictionary x:TypeArguments="x:String, x:Object">
                   <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                 </scg:Dictionary>
               </sap:WorkflowViewStateService.ViewState>
-              <Assign DisplayName="A_initiliser le compteur des tentatives" sap:VirtualizedContainerService.HintSize="484,62" sap2010:WorkflowViewState.IdRef="Assign_13">
+              <Assign DisplayName="A_initiliser le compteur des tentatives" sap:VirtualizedContainerService.HintSize="484,61" sap2010:WorkflowViewState.IdRef="Assign_13">
                 <Assign.To>
                   <OutArgument x:TypeArguments="x:Int32">[int_tentativeDeConnexion]</OutArgument>
                 </Assign.To>
@@ -928,7 +1198,7 @@
                   <InArgument x:TypeArguments="x:Int32">0</InArgument>
                 </Assign.Value>
               </Assign>
-              <Assign sap:VirtualizedContainerService.HintSize="484,62" sap2010:WorkflowViewState.IdRef="Assign_12">
+              <Assign sap:VirtualizedContainerService.HintSize="484,61" sap2010:WorkflowViewState.IdRef="Assign_12">
                 <Assign.To>
                   <OutArgument x:TypeArguments="x:Boolean">[bool_TDLWindowExist]</OutArgument>
                 </Assign.To>
@@ -936,7 +1206,7 @@
                   <InArgument x:TypeArguments="x:Boolean">[new Boolean]</InArgument>
                 </Assign.Value>
               </Assign>
-              <ui:Click AlterIfDisabled="{x:Null}" DelayBefore="{x:Null}" DelayMS="{x:Null}" SendWindowMessages="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'Button'" sap:VirtualizedContainerService.HintSize="484,106" sap2010:WorkflowViewState.IdRef="Click_3" KeyModifiers="None" MouseButton="BTN_LEFT" SimulateClick="True">
+              <ui:Click AlterIfDisabled="{x:Null}" DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'Button'" sap:VirtualizedContainerService.HintSize="484,107" sap2010:WorkflowViewState.IdRef="Click_3" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="True" SimulateClick="False">
                 <ui:Click.CursorPosition>
                   <ui:CursorPosition Position="Center">
                     <ui:CursorPosition.OffsetX>
@@ -955,12 +1225,12 @@
                   </ui:Target>
                 </ui:Click.Target>
               </ui:Click>
-              <ui:UiElementExists DisplayName="Element Exists 'tdladmin.exe Search'" Exists="[bool_windowExist]" sap:VirtualizedContainerService.HintSize="484,106" sap2010:WorkflowViewState.IdRef="UiElementExists_7">
+              <ui:UiElementExists DisplayName="Element Exists 'tdladmin.exe Search'" Exists="[bool_windowExist]" sap:VirtualizedContainerService.HintSize="484,107" sap2010:WorkflowViewState.IdRef="UiElementExists_7">
                 <ui:UiElementExists.Target>
                   <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="48ed3128-608e-4a3e-b019-1c0e47e4304b" InformativeScreenshot="7f0da2e88e9ab86442f500c2eb59a8e3" Selector="&lt;wnd app='tdladmin.exe' cls='#32770' title='Search for client' /&gt;" TimeoutMS="5000" WaitForReady="INTERACTIVE" />
                 </ui:UiElementExists.Target>
               </ui:UiElementExists>
-              <If Condition="[bool_windowExist=True]" sap:VirtualizedContainerService.HintSize="484,494.666666666667" sap2010:WorkflowViewState.IdRef="If_5">
+              <If Condition="[bool_windowExist=True]" sap:VirtualizedContainerService.HintSize="484,668" sap2010:WorkflowViewState.IdRef="If_5">
                 <sap:WorkflowViewStateService.ViewState>
                   <scg:Dictionary x:TypeArguments="x:String, x:Object">
                     <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -968,18 +1238,32 @@
                   </scg:Dictionary>
                 </sap:WorkflowViewStateService.ViewState>
                 <If.Then>
-                  <Sequence sap:VirtualizedContainerService.HintSize="376,303.333333333333" sap2010:WorkflowViewState.IdRef="Sequence_32">
+                  <Sequence sap:VirtualizedContainerService.HintSize="400,478" sap2010:WorkflowViewState.IdRef="Sequence_32">
                     <sap:WorkflowViewStateService.ViewState>
                       <scg:Dictionary x:TypeArguments="x:String, x:Object">
                         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                       </scg:Dictionary>
                     </sap:WorkflowViewStateService.ViewState>
-                    <ui:SendOutlookMail Account="{x:Null}" Bcc="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" TimeoutMS="{x:Null}" Body="Le robot n'a pas pu ouvrir le formulaire sur TDL Admin pour créer un nouveau client." DisplayName="Send Outlook Mail Message" sap:VirtualizedContainerService.HintSize="334,149.333333333333" sap2010:WorkflowViewState.IdRef="SendOutlookMail_4" Importance="Normal" IsBodyHtml="False" IsDraft="False" Sensitivity="Normal" Subject="Erreur robot" To="[in_config(&quot;adresseMailForErrorMSG&quot;).ToString]">
-                      <ui:SendOutlookMail.Files>
-                        <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
-                      </ui:SendOutlookMail.Files>
-                    </ui:SendOutlookMail>
-                    <Throw Exception="[New SystemException(&quot;Le robot n'a pas pu ouvrir le formulaire sur TDL Admin pour créer un nouveau client.&quot;)]" sap:VirtualizedContainerService.HintSize="334,22" sap2010:WorkflowViewState.IdRef="Throw_7" />
+                    <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke TakeScreenshot workflow" sap:VirtualizedContainerService.HintSize="338,114" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_11" UnSafe="False" WorkflowFileName="Framework\TakeScreenshot.xaml">
+                      <ui:InvokeWorkflowFile.Arguments>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_Folder">
+                          <mva:VisualBasicValue x:TypeArguments="x:String" ExpressionText="in_Config(&quot;ExScreenshotsFolderPath&quot;).ToString" />
+                        </InArgument>
+                        <InOutArgument x:TypeArguments="x:String" x:Key="io_FilePath">
+                          <mva:VisualBasicReference x:TypeArguments="x:String" ExpressionText="path_screenshot" />
+                        </InOutArgument>
+                      </ui:InvokeWorkflowFile.Arguments>
+                    </ui:InvokeWorkflowFile>
+                    <ui:SendMail Bcc="{x:Null}" Cc="{x:Null}" From="{x:Null}" MailMessage="{x:Null}" ReplyTo="{x:Null}" SecurePassword="{x:Null}" TimeoutMS="{x:Null}" UseOAuth="{x:Null}" Body="[&quot;Bonjour&quot;+system.Environment.NewLine+system.Environment.NewLine+&quot;Le robot n'a pas pu ouvrir le formulaire sur TDL admin pour créer un nouveau client&quot;+system.Environment.NewLine+system.Environment.NewLine+&quot;Merci&quot;]" DisplayName="Send SMTP Mail Message" Email="[in_str_usernameSMTP]" EnableSSL="True" sap:VirtualizedContainerService.HintSize="338,148" sap2010:WorkflowViewState.IdRef="SendMail_3" IgnoreCRL="False" IsBodyHtml="False" Name="RPA TDL Admin" Password="[in_str_passwordSMTP]" Port="587" SecureConnection="Auto" Server="smtp.office365.com" Subject="Error robot" To="[in_Config(&quot;adresseMailForErrorMSG&quot;).ToString]">
+                      <ui:SendMail.Files>
+                        <scg:List x:TypeArguments="InArgument(x:String)" Capacity="4">
+                          <InArgument x:TypeArguments="x:String">
+                            <mva:VisualBasicValue x:TypeArguments="x:String" ExpressionText="path_screenshot" />
+                          </InArgument>
+                        </scg:List>
+                      </ui:SendMail.Files>
+                    </ui:SendMail>
+                    <Throw Exception="[New SystemException(&quot;Le robot n'a pas pu ouvrir le formulaire sur TDL Admin pour créer un nouveau client.&quot;)]" sap:VirtualizedContainerService.HintSize="338,25" sap2010:WorkflowViewState.IdRef="Throw_7" />
                   </Sequence>
                 </If.Then>
                 <If.Else>
@@ -999,6 +1283,7 @@
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
             <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </ui:WindowScope>

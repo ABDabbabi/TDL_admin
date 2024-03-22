@@ -1,4 +1,4 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="Test" mva:VisualBasic.Settings="{x:Null}" sap:VirtualizedContainerService.HintSize="600,560" sap2010:WorkflowViewState.IdRef="Test_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:sg="clr-namespace:System.Globalization;assembly=mscorlib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Activity mc:Ignorable="sap sap2010" x:Class="Test" mva:VisualBasic.Settings="{x:Null}" sap:VirtualizedContainerService.HintSize="602,463" sap2010:WorkflowViewState.IdRef="Test_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <TextExpression.NamespacesForImplementation>
     <scg:List x:TypeArguments="x:String" Capacity="60">
       <x:String>System.Activities</x:String>
@@ -32,10 +32,15 @@
       <x:String>System.Runtime.Serialization</x:String>
       <x:String>System.Xml.Serialization</x:String>
       <x:String>System.Globalization</x:String>
+      <x:String>System.Security</x:String>
+      <x:String>UiPath.Mail</x:String>
+      <x:String>UiPath.Mail.SMTP.Activities</x:String>
+      <x:String>UiPath.Mail.Activities</x:String>
+      <x:String>UiPath.Shared.Activities</x:String>
     </scg:List>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
-    <scg:List x:TypeArguments="AssemblyReference" Capacity="44">
+    <sco:Collection x:TypeArguments="AssemblyReference">
       <AssemblyReference>System.Activities</AssemblyReference>
       <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
       <AssemblyReference>mscorlib</AssemblyReference>
@@ -64,79 +69,34 @@
       <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
       <AssemblyReference>UiPath.Excel</AssemblyReference>
       <AssemblyReference>System.Collections.Immutable</AssemblyReference>
-      <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
-    </scg:List>
+      <AssemblyReference>UiPath.Studio.Constants</AssemblyReference>
+      <AssemblyReference>UiPath.Mail</AssemblyReference>
+      <AssemblyReference>UiPath.Mail.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Mail.Activities.Design</AssemblyReference>
+      <AssemblyReference>UiPath.Excel.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Testing.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.OCR.Activities</AssemblyReference>
+    </sco:Collection>
   </TextExpression.ReferencesForImplementation>
-  <Sequence sap:VirtualizedContainerService.HintSize="400.666666666667,495.333333333333" sap2010:WorkflowViewState.IdRef="Sequence_4">
-    <Sequence.Variables>
-      <Variable x:TypeArguments="x:Boolean" Name="boot_test" />
-      <Variable x:TypeArguments="x:String" Name="str_test" />
-      <Variable x:TypeArguments="sd:DataTable" Name="dt_test" />
-      <Variable x:TypeArguments="sg:CultureInfo" Default="[new CultureInfo(&quot;fr-FR&quot;)]" Name="CULT" />
-      <Variable x:TypeArguments="s:DateTime" Default="[DateTime.Now]" Name="datee" />
-    </Sequence.Variables>
+  <Sequence sap:VirtualizedContainerService.HintSize="400,218" sap2010:WorkflowViewState.IdRef="Sequence_5">
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <ui:SelectItem AlterIfDisabled="{x:Null}" ContinueOnError="{x:Null}" DelayAfter="{x:Null}" DelayBefore="{x:Null}" DisplayName="Select Item 'combo box  Country'" sap:VirtualizedContainerService.HintSize="358.666666666667,134" sap2010:WorkflowViewState.IdRef="SelectItem_1" Item="[str_test]">
-      <ui:SelectItem.Items>
-        <scg:List x:TypeArguments="x:String" Capacity="50">
-          <x:String>Aegypten</x:String>
-          <x:String>Aequatorial-Guinea</x:String>
-          <x:String>Aethiopien</x:String>
-          <x:String>Afghanistan</x:String>
-          <x:String>Åland Islands</x:String>
-          <x:String>Albanien</x:String>
-          <x:String>Algeria</x:String>
-          <x:String>Amerikanische Jungferninseln</x:String>
-          <x:String>Amerikanisch-Samoa</x:String>
-          <x:String>Andorra</x:String>
-          <x:String>Angola</x:String>
-          <x:String>Anguilla</x:String>
-          <x:String>Antigua und Barbuda</x:String>
-          <x:String>Argentinien</x:String>
-          <x:String>Armenien</x:String>
-          <x:String>Aruba</x:String>
-          <x:String>Aserbaidschan</x:String>
-          <x:String>Australien</x:String>
-          <x:String>Bahamas</x:String>
-          <x:String>Bahrain</x:String>
-          <x:String>Bangladesh</x:String>
-          <x:String>Barbados</x:String>
-          <x:String>Belarus (Weissrussland)</x:String>
-          <x:String>Belgien</x:String>
-          <x:String>Belize</x:String>
-          <x:String>Benin</x:String>
-          <x:String>Bermuda</x:String>
-          <x:String>Besetzte Palaestinensische Gebiete</x:String>
-          <x:String>Bhutan</x:String>
-          <x:String>Bolivien</x:String>
-          <x:String>Bosnien-Herzegowina</x:String>
-          <x:String>Botswana</x:String>
-          <x:String>Brasilien</x:String>
-          <x:String>Britische Jungferninseln</x:String>
-          <x:String>Brunei</x:String>
-          <x:String>Bulgarien</x:String>
-          <x:String>Burkina Faso</x:String>
-          <x:String>Burundi</x:String>
-          <x:String>Cayman-Inseln</x:String>
-          <x:String>Chile</x:String>
-          <x:String>Cook-Inseln</x:String>
-          <x:String>Costa Rica</x:String>
-          <x:String>Daenemark</x:String>
-          <x:String>Demokratische Republik Kongo</x:String>
-          <x:String>Demokratische Volksrepublik Korea</x:String>
-          <x:String>Deutschland</x:String>
-          <x:String>Dominica</x:String>
-          <x:String>Dominikanische Republik</x:String>
-          <x:String>Dschibuti</x:String>
-          <x:String>Ecuador</x:String>
-        </scg:List>
-      </ui:SelectItem.Items>
-      <ui:SelectItem.Target>
-        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="d42549d5-2e06-4098-9ce5-87124022457a" InformativeScreenshot="72d4c5a260fd8fda37958863c17cc9ec" Selector="&lt;wnd app='tdladmin.exe' cls='#32770' title='TDL-ADMIN - Edit client' /&gt;&lt;wnd cls='#32770' title='Edit client' /&gt;&lt;wnd ctrlid='2062' /&gt;&lt;ctrl name='Country' role='combo box' /&gt;">
+    <ui:Click AlterIfDisabled="{x:Null}" DelayBefore="{x:Null}" DelayMS="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'Button'" sap:VirtualizedContainerService.HintSize="338,107" sap2010:WorkflowViewState.IdRef="Click_1" KeyModifiers="None" MouseButton="BTN_LEFT" SendWindowMessages="True" SimulateClick="False">
+      <ui:Click.CursorPosition>
+        <ui:CursorPosition Position="Center">
+          <ui:CursorPosition.OffsetX>
+            <InArgument x:TypeArguments="x:Int32" />
+          </ui:CursorPosition.OffsetX>
+          <ui:CursorPosition.OffsetY>
+            <InArgument x:TypeArguments="x:Int32" />
+          </ui:CursorPosition.OffsetY>
+        </ui:CursorPosition>
+      </ui:Click.CursorPosition>
+      <ui:Click.Target>
+        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="cb97fa39-0d76-4ae0-865b-4e309deea105" InformativeScreenshot="753380984cd30996f22591fed56f0ca7" Selector="&lt;wnd app='tdladmin.exe' cls='#32770' title='TDL-ADMIN - Edit client' /&gt;&lt;wnd cls='#32770' title='Edit client' /&gt;&lt;wnd ctrlid='1001' title='New' aaname='New' /&gt;">
           <ui:Target.TimeoutMS>
             <InArgument x:TypeArguments="x:Int32" />
           </ui:Target.TimeoutMS>
@@ -144,9 +104,7 @@
             <InArgument x:TypeArguments="ui:WaitForReady" />
           </ui:Target.WaitForReady>
         </ui:Target>
-      </ui:SelectItem.Target>
-    </ui:SelectItem>
-    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="358.666666666667,94.6666666666667" sap2010:WorkflowViewState.IdRef="LogMessage_2" Message="[&quot;th&quot;]" />
-    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="358.666666666667,94.6666666666667" sap2010:WorkflowViewState.IdRef="LogMessage_1" Message="[datee.ToString(&quot;dddd&quot;,new CultureInfo(&quot;fr-FR&quot;))]" />
+      </ui:Click.Target>
+    </ui:Click>
   </Sequence>
 </Activity>
